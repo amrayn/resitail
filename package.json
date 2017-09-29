@@ -1,11 +1,11 @@
 {
-  "name": "frontail",
-  "version": "4.0.4",
-  "description": "streaming logs to the browser",
-  "homepage": "https://github.com/mthenw/frontail",
-  "author": "Maciej Winnicki <maciej.winnicki@gmail.com>",
+  "name": "resitail",
+  "version": "1.0.0",
+  "description": "Stream residue logs to the browser",
+  "homepage": "https://github.com/muflihun/resitail",
+  "author": "Muflihun Labs <info@muflihun.com>",
   "license": "MIT",
-  "bin": "./bin/frontail",
+  "bin": "./bin/resitail",
   "dependencies": {
     "CBuffer": "0.1.4",
     "byline": "^5.0.0",
@@ -32,9 +32,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/mthenw/frontail.git"
+    "url": "http://github.com/muflihun/resitail.git"
   },
-  "keywords": ["tail", "syslog", "realtime", "log", "devops"],
+  "keywords": ["tail", "residue", "realtime", "log", "devops"],
   "main": "index",
   "preferGlobal": true
 }
