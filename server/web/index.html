@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Residue Logs</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="/styles/default.css">
+    <link rel="icon" href="/favicon.ico">
+  </head>
+  <body>
+    <div id="log-lines"></ul>
+    <script src="/scripts/socket.io-1.2.0.js"></script>
+    <script src="/scripts/jquery-1.11.1.js"></script>
+    <script src="/scripts/tinycon.min.js"></script>
+    <script>
+      var newLinesCount = 0;
+
+      function updateFavIcon() {
+        Tinycon.setBubble(newLinesCount);
+      }
+
+      $(function () {
+
+        window.addEventListener('focus', function() {
+          newLinesCount = 0;
+          updateFavIcon();
+        }, true);
+
+        var socket = io();
+
+        socket.emit('resitail:connect', location.search);
+
+        socket.on('resitail:line', function(line){
+          var div = document.createElement('div');
+          div.innerHTML = '<p class=\'line\'>' + line + '</p>';
+          document.getElementById('log-lines').appendChild(div.children[0]);
+          newLinesCount++;
+
+          window.setTimeout(function() {
+            updateFavIcon();
+            window.scrollTo(0, document.body.scrollHeight);
+          }, 800);
+        });
+      });
+    </script>
+  </body>
+</html>

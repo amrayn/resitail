@@ -50,4 +50,11 @@ Tail.prototype.getBuffer = function getBuffer() {
   return this._buffer.toArray();
 };
 
+Tail.prototype.kill = function kill() {
+  if (typeof this._tail === 'undefined') {
+    return;
+  }
+  return this._tail.kill();
+};
+
 module.exports = (path, options) => new Tail(path, options);
