@@ -5,7 +5,7 @@
 # Overview
 You can use resitail to stream residue logs on your browser.
 
-resitail is forked from [frontail](https://github.com/mthenw/frontail) to suit the needs.
+resitail is forked from [frontail](https://github.com/mthenw/frontail) (MIT) to suit the needs.
 
 [ **Currently under development** ]
 
