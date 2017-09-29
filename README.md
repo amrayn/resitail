@@ -3,18 +3,18 @@
 </p>
 
 # Overview
-You can use residue-tail to stream residue logs on your browser.
+You can use resitail to stream residue logs on your browser.
 
-Residue tail is forked from [frontail](https://github.com/mthenw/frontail) to suit the needs.
+resitail is forked from [frontail](https://github.com/mthenw/frontail) to suit the needs.
 
-[ *Currently under development* ]
+[ **Currently under development** ]
 
-[![Build Status](https://img.shields.io/travis/muflihun/residue-tail.svg?style=flat)](https://travis-ci.org/muflihun/residue-tail)
+[![Build Status](https://img.shields.io/travis/muflihun/resitail.svg?style=flat)](https://travis-ci.org/muflihun/resitail)
 
 ## Quick start
 
-- `npm i frontail -g`
-- `frontail /var/log/syslog`
+- `npm i resitail -g`
+- `resitail /var/log/residue.log`
 - visit [http://127.0.0.1:9001](http://127.0.0.1:9001)
 
 ## Features
@@ -31,15 +31,11 @@ Residue tail is forked from [frontail](https://github.com/mthenw/frontail) to su
 
 ## Installation
 
-    npm i frontail -g
-
-or use [Docker image](https://registry.hub.docker.com/u/mthenw/frontail/)
-
-    docker run -d -P -v /var/log:/log mthenw/frontail /log/syslog
-
+    npm i resitail -g
+    
 ## Usage
 
-    frontail [options] [file ...]
+    resitail [options] [file ...]
 
     Options:
 
@@ -55,7 +51,7 @@ or use [Docker image](https://registry.hub.docker.com/u/mthenw/frontail/)
       -P, --password <password>     Basic Authentication password, option works only along with -U option
       -k, --key <key.pem>           Private Key for HTTPS, option works only along with -c option
       -c, --certificate <cert.pem>  Certificate for HTTPS, option works only along with -k option
-      --pid-path <path>             if run as daemon file that will store the process id, default /var/run/frontail.pid
+      --pid-path <path>             if run as daemon file that will store the process id, default /var/run/resitail.pid
       --log-path <path>             if run as daemon file that will be used as a log, default /dev/null
       --ui-hide-topbar              hide topbar (log file name and search box)
       --ui-no-indent                don't indent log lines
@@ -72,7 +68,7 @@ Web interface runs on **http://127.0.0.1:[port]**.
 
 Use `-` for streaming stdin:
 
-    ./server | frontail -
+    ./server | resitail -
 
 ### Highlighting
 
