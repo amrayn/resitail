@@ -30,7 +30,7 @@ describe('daemonize', () => {
     });
 
     it('with hostname', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-h', '127.0.0.1']);
+      optionsParser.parse(['node', '/path/to/resitail', '-h', '127.0.0.1']);
 
       daemonize('script', optionsParser);
 
@@ -38,7 +38,7 @@ describe('daemonize', () => {
     });
 
     it('with port', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-p', '80']);
+      optionsParser.parse(['node', '/path/to/resitail', '-p', '80']);
 
       daemonize('script', optionsParser);
 
@@ -46,7 +46,7 @@ describe('daemonize', () => {
     });
 
     it('with lines number', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-n', '1']);
+      optionsParser.parse(['node', '/path/to/resitail', '-n', '1']);
 
       daemonize('script', optionsParser);
 
@@ -54,7 +54,7 @@ describe('daemonize', () => {
     });
 
     it('with lines stored in browser', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-l', '1']);
+      optionsParser.parse(['node', '/path/to/resitail', '-l', '1']);
 
       daemonize('script', optionsParser);
 
@@ -62,7 +62,7 @@ describe('daemonize', () => {
     });
 
     it('with theme', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-t', 'dark']);
+      optionsParser.parse(['node', '/path/to/resitail', '-t', 'dark']);
 
       daemonize('script', optionsParser);
 
@@ -70,7 +70,7 @@ describe('daemonize', () => {
     });
 
     it('with authorization', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-U', 'user', '-P', 'passw0rd']);
+      optionsParser.parse(['node', '/path/to/resitail', '-U', 'user', '-P', 'passw0rd']);
 
       daemonize('script', optionsParser, {
         doAuthorization: true,
@@ -80,7 +80,7 @@ describe('daemonize', () => {
     });
 
     it('without authorization if option doAuthorization not passed', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-U', 'user', '-P', 'passw0rd']);
+      optionsParser.parse(['node', '/path/to/resitail', '-U', 'user', '-P', 'passw0rd']);
 
       daemonize('script', optionsParser);
 
@@ -88,7 +88,7 @@ describe('daemonize', () => {
     });
 
     it('with secure connection', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-k', 'key.file', '-c', 'cert.file']);
+      optionsParser.parse(['node', '/path/to/resitail', '-k', 'key.file', '-c', 'cert.file']);
 
       daemonize('script', optionsParser, {
         doSecure: true,
@@ -98,7 +98,7 @@ describe('daemonize', () => {
     });
 
     it('without secure connection if option doSecure not passed', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '-k', 'key.file', '-c', 'cert.file']);
+      optionsParser.parse(['node', '/path/to/resitail', '-k', 'key.file', '-c', 'cert.file']);
 
       daemonize('script', optionsParser, {
         doSecure: true,
@@ -108,7 +108,7 @@ describe('daemonize', () => {
     });
 
     it('with hide-topbar option', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '--ui-hide-topbar']);
+      optionsParser.parse(['node', '/path/to/resitail', '--ui-hide-topbar']);
 
       daemonize('script', optionsParser);
 
@@ -116,7 +116,7 @@ describe('daemonize', () => {
     });
 
     it('with no-indent option', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '--ui-no-indent']);
+      optionsParser.parse(['node', '/path/to/resitail', '--ui-no-indent']);
 
       daemonize('script', optionsParser);
 
@@ -124,7 +124,7 @@ describe('daemonize', () => {
     });
 
     it('with highlight option', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '--ui-highlight']);
+      optionsParser.parse(['node', '/path/to/resitail', '--ui-highlight']);
 
       daemonize('script', optionsParser);
 
@@ -133,7 +133,7 @@ describe('daemonize', () => {
     });
 
     it('with file to tail', () => {
-      optionsParser.parse(['node', '/path/to/frontail', '/path/to/file']);
+      optionsParser.parse(['node', '/path/to/resitail', '/path/to/file']);
 
       daemonize('script', optionsParser);
 
@@ -142,7 +142,7 @@ describe('daemonize', () => {
   });
 
   it('should write pid to pidfile', () => {
-    optionsParser.parse(['node', '/path/to/frontail', '--pid-path', '/path/to/pid']);
+    optionsParser.parse(['node', '/path/to/resitail', '--pid-path', '/path/to/pid']);
 
     daemonize('script', optionsParser);
 
@@ -151,7 +151,7 @@ describe('daemonize', () => {
   });
 
   it('should log to file', () => {
-    optionsParser.parse(['node', '/path/to/frontail', '--log-path', '/path/to/log']);
+    optionsParser.parse(['node', '/path/to/resitail', '--log-path', '/path/to/log']);
     fs.openSync.returns('file');
 
     daemonize('script', optionsParser);
