@@ -18,6 +18,18 @@
         Tinycon.setBubble(newLinesCount);
       }
 
+      function appendLine(html) {
+        var div = document.createElement('div');
+        div.innerHTML = html;
+        document.getElementById('log-lines').appendChild(div.children[0]);
+        newLinesCount++;
+
+        window.setTimeout(function() {
+          updateFavIcon();
+          window.scrollTo(0, document.body.scrollHeight);
+        }, 800);
+      }
+
       $(function () {
 
         window.addEventListener('focus', function() {
@@ -30,15 +42,11 @@
         socket.emit('resitail:connect', location.search);
 
         socket.on('resitail:line', function(line){
-          var div = document.createElement('div');
-          div.innerHTML = '<p class=\'line\'>' + line + '</p>';
-          document.getElementById('log-lines').appendChild(div.children[0]);
-          newLinesCount++;
+          appendLine('<p class=\'line\'>' + line + '</p>');
+        });
 
-          window.setTimeout(function() {
-            updateFavIcon();
-            window.scrollTo(0, document.body.scrollHeight);
-          }, 800);
+        socket.on('resitail:err', function(line){
+          appendLine('<p class=\'line\'><span class=\'line-err\'>' + line + '</span></p>');
         });
       });
     </script>

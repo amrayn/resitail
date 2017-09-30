@@ -32,42 +32,46 @@ io.on('connection', function(socket) {
   const tails = {};
   const residue_connection = new net.Socket();
   residue_connection.on('data', function(data, cb) {
+      let decrypted = '<failed>';
       try {
-        let resp = JSON.parse(crypt.decrypt(data.toString()));
+        decrypted = crypt.decrypt(data.toString());
+        const resp = JSON.parse(decrypted);
         for (var i = 0; i < resp.length; ++i) {
-          let list = resp[i].list;
+          const list = resp[i].list;
+
+          const finalList = [];
+
           for (var j = 0; j < list.length; ++j) {
-            const logFile = list[j];
-            console.log('checking ' + logFile);
-            if (fs.existsSync(logFile)) {
-
-              const tailProcess = tail(logFile, {
-                buffer: 10,
-              });
-
-              tailProcess.on('line', function(data) {
-                socket.emit('resitail:line', data);
-              });
-
-              tailProcess.on('info', function(data) {
-                socket.emit('resitail:line', `<span class='line-info'>${data}</span>`);
-              });
-
-              tailProcess.on('error', function(error) {
-                socket.emit('resitail:line', `<span class='line-err'>${data}</span>`);
-              });
-
-              if (typeof tails[socket.id] === 'undefined') {
-                tails[socket.id] = [];
-              }
-
-              tails[socket.id].push(tailProcess);
-              console.log('tailing ' + logFile);
+            if (fs.existsSync(list[j])) {
+              finalList.push(list[j]);
             }
           }
+
+          const tailProcess = tail(finalList, {
+            buffer: 10,
+          });
+
+          tailProcess.on('line', function(data) {
+            socket.emit('resitail:line', data);
+          });
+
+          tailProcess.on('info', function(data) {
+            socket.emit('resitail:line', `<span class='line-info'>${data}</span>`);
+          });
+
+          tailProcess.on('error', function(error) {
+            socket.emit('resitail:line', `<span class='line-err'>${data}</span>`);
+          });
+
+          if (typeof tails[socket.id] === 'undefined') {
+            tails[socket.id] = [];
+          }
+
+          tails[socket.id].push(tailProcess);
+          console.log(finalList);
         }
       } catch (err) {
-        socket.emit('resitail:err', 'error occurred');
+        socket.emit('resitail:err', `error occurred, details: ${decrypted}`);
         console.log(err);
       }
   });

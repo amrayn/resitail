@@ -28,7 +28,8 @@ body {
 }
 
 #log-lines .line .line-err {
-  color: red;
+  background-color: #ce0000;
+  color: #fff;
 }
 
 #log-lines .line:before {
