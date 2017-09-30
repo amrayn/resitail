@@ -5,9 +5,15 @@ const fs = require('fs');
 const net = require('net');
 const tail = require('./tail');
 const residue_crypt = require('./residue_crypt');
+const proc = require('./option_parser');
 
-const port = process.env.PORT || 3000;
-const residue_config = JSON.parse(fs.readFileSync(process.argv[2]));
+proc.parse(process.argv);
+if (proc.config === false) {
+  console.error('No config file provided. resitail --config <residue_config> --port <port>');
+  process.exit();
+}
+
+const residue_config = JSON.parse(fs.readFileSync(proc.config));
 const crypt = residue_crypt(residue_config);
 
 app.get('*', function(req, res, next) {
@@ -118,6 +124,6 @@ io.on('connection', function(socket) {
   });
 });
 
-http.listen(port, function() {
-  console.log('Started server on *:' + port);
+http.listen(proc.port, function() {
+  console.log('Started server on *:' + proc.port);
 });

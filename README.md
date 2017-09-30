@@ -16,7 +16,7 @@ Some parts of resitail uses code from [frontail](https://github.com/mthenw/front
 ## Quick start
 
 - `npm i resitail -g`
-- `resitail <residue_config>`
+- `resitail --config <residue_config> --port <port, default: 3000>`
 - visit [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
 ## Installation

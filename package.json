@@ -10,6 +10,7 @@
     "CBuffer": "^2.0.0",
     "byline": "^5.0.0",
     "child_process": "^1.0.2",
+    "commander": "^2.11.0",
     "events": "^1.1.1",
     "express": "^4.16.0",
     "fs": "0.0.1-security",
@@ -24,7 +25,13 @@
     "type": "git",
     "url": "http://github.com/muflihun/resitail.git"
   },
-  "keywords": ["tail", "residue", "realtime", "log", "devops"],
+  "keywords": [
+    "tail",
+    "residue",
+    "realtime",
+    "log",
+    "devops"
+  ],
   "main": "index",
   "preferGlobal": true
 }
