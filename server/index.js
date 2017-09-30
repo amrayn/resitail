@@ -1,7 +1,7 @@
-let app = require('express')();
-let http = require('http').Server(app);
-let io = require('socket.io')(http);
-let fs = require('fs');
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const fs = require('fs');
 const net = require('net');
 const tail = require('./tail');
 const residue_crypt = require('./residue_crypt');
@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 const residue_config = JSON.parse(fs.readFileSync(process.argv[2]));
 const crypt = residue_crypt(residue_config);
 
-app.get('*', function(req, res, next){
+app.get('*', function(req, res, next) {
   if (req.originalUrl.indexOf('/?') === -1) {
     res.sendFile(__dirname + '/web/' + req.originalUrl);
   } else {
@@ -18,13 +18,13 @@ app.get('*', function(req, res, next){
   }
 });
 
-app.get('/', function(req, res){
+app.get('/', function(req, res) {
   res.sendFile(__dirname + '/web/index.html');
 });
 
-io.on('connection', function(socket){
-  const residue_connection = new net.Socket();
+io.on('connection', function(socket) {
   const tails = {};
+  const residue_connection = new net.Socket();
   residue_connection.on('data', function(data, cb) {
       try {
         let resp = JSON.parse(crypt.decrypt(data.toString()));
@@ -43,8 +43,12 @@ io.on('connection', function(socket){
                 socket.emit('resitail:line', data);
               });
 
+              tailProcess.on('info', function(data) {
+                socket.emit('resitail:line', `<span class='line-info'>${data}</span>`);
+              });
+
               tailProcess.on('error', function(error) {
-                socket.emit('resitail:line', data);
+                socket.emit('resitail:line', `<span class='line-err'>${data}</span>`);
               });
 
               if (typeof tails[socket.id] === 'undefined') {
@@ -71,7 +75,7 @@ io.on('connection', function(socket){
       console.log(error);
   });
 
-  socket.on('resitail:connect', function(parameters){
+  socket.on('resitail:connect', function(parameters) {
     var params = {};
     var query = parameters.substr(1).split('&');
     for (var i = 0; i < query.length; ++i) {
@@ -114,6 +118,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(port, function(){
+http.listen(port, function() {
   console.log('Started server on *:' + port);
 });

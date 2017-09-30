@@ -28,8 +28,9 @@ function Tail(path, opts) {
     tail.stderr.on('data', (data) => {
       // If there is any important error then display it in the console. Tail will keep running.
       // File can be truncated over network.
+      console.error('error: ' + data.toString());
       if (data.toString().indexOf('file truncated') === -1) {
-        console.error(data.toString());
+        this.emit('info', '=== file truncated ===');
       }
     });
 

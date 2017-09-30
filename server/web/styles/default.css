@@ -1,7 +1,11 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; 
+  box-sizing: border-box;
+}
+
+body {
+  counter-reset: line-count;
 }
 
 #log-lines {
@@ -19,6 +23,22 @@
   word-wrap: break-word;
 }
 
-#log-lines li:nth-child(odd) {
-  background: #eee;
+#log-lines .line .line-info {
+  color: blue;
+}
+
+#log-lines .line .line-err {
+  color: red;
+}
+
+#log-lines .line:before {
+  counter-increment: line-count;
+  content: counter(line-count);
+  padding-left: 8px;
+  padding-right: 8px;
+  background-color: #ccc;
+}
+
+#log-lines .line:nth-child(odd) {
+  background: #ffe;
 }
