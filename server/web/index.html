@@ -50,12 +50,22 @@
 
         socket.emit('resitail:connect', location.search);
 
-        socket.on('resitail:line', function(line){
-          appendLine('<p class=\'line\'>' + line + '</p>');
+        socket.on('resitail:line', function(resp){
+          switch (resp.type) {
+            case 'log':
+              appendLine('<p class=\'line\'>' + resp.data + '</p>');
+              break;
+            case 'err':
+              appendLine('<p class=\'line\'><span class=\'line-err\'>' + resp.data + '</span></p>');
+              break;
+            case 'info':
+              appendLine('<p class=\'line\'><span class=\'line-info\'>' + resp.data + '</span></p>');
+              break;
+          }
         });
 
-        socket.on('resitail:err', function(line){
-          appendLine('<p class=\'line\'><span class=\'line-err\'>' + line + '</span></p>');
+        socket.on('resitail:err', function(resp){
+          appendLine('<p class=\'line\'><span class=\'line-err\'>' + resp.data + '</span></p>');
         });
       });
     </script>

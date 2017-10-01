@@ -1,6 +1,7 @@
 const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const http = require('http');
+const server = http.Server(app);
+const io = require('socket.io')(server);
 const fs = require('fs');
 const net = require('net');
 const tail = require('./tail');
@@ -37,7 +38,7 @@ io.on('connection', function(socket) {
         decrypted = crypt.decrypt(data.toString());
         const resp = JSON.parse(decrypted);
         for (var i = 0; i < resp.length; ++i) {
-          const list = resp[i].list;
+          const list = resp[i].files;
 
           const finalList = [];
 
@@ -52,15 +53,24 @@ io.on('connection', function(socket) {
           });
 
           tailProcess.on('line', function(data) {
-            socket.emit('resitail:line', data);
+              socket.emit('resitail:line', {
+                type: 'log',
+                data: data,
+              });
           });
 
           tailProcess.on('info', function(data) {
-            socket.emit('resitail:line', `<span class='line-info'>${data}</span>`);
+            socket.emit('resitail:line', {
+              type: 'info',
+              data: data,
+            });
           });
 
           tailProcess.on('error', function(error) {
-            socket.emit('resitail:line', `<span class='line-err'>${data}</span>`);
+            socket.emit('resitail:err', {
+              type: 'err',
+              data: data,
+            });
           });
 
           if (typeof tails[socket.id] === 'undefined') {
@@ -71,7 +81,10 @@ io.on('connection', function(socket) {
           console.log(finalList);
         }
       } catch (err) {
-        socket.emit('resitail:err', `error occurred, details: ${decrypted}`);
+        socket.emit('resitail:err', {
+          type: 'err',
+          data: `error occurred, details: ${decrypted}`,
+        });
         console.log(err);
       }
   });
@@ -128,6 +141,6 @@ io.on('connection', function(socket) {
   });
 });
 
-http.listen(proc.port, function() {
+server.listen(proc.port, function() {
   console.log('Started server on *:' + proc.port);
 });
