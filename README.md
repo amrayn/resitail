@@ -30,13 +30,16 @@ Currently, resitail is very limited to the following features:
  * Simple tailing using basic filters ([`clientId`](http://residue-demo.muflihun.com/?clientId=muflihun00102030), [`loggerId`](http://residue-demo.muflihun.com/?clientId=muflihun00102030&loggerId=default) and [`levels`](http://residue-demo.muflihun.com/?clientId=muflihun00102030&loggerId=sample-app&levels=info))
  
 Resitail aims to provide (but not limited to):
- * Fully featured log streaming on browser
- * Optional HTTPS support
- * Optional basic authentication
- * Login functionality to keep track of user-clients map so that user can login using their own credentials and display list of clients, loggers and logging levels
- * Filters and searching for logs
- * Highlighting logs using specific patterns (preset patterns and user-provided patterns)
- * We are happy to integrate other similar software (e.g, [kibana](https://www.elastic.co/products/kibana)) as they are much mature and actively developed, as long as they can: parse residue configurations, query residue server using admin requests and tail specific log files for specific users
+* Server:
+   - Fully featured log streaming on browser
+   - Optional HTTPS support
+   - Optional basic authentication
+   - Login functionality to keep track of user-clients map so that user can login using their own credentials and display list of clients, loggers and logging levels
+* Web Interface
+   - Filters and searching for logs
+   - Highlighting logs using specific patterns (preset patterns and user-provided patterns)
+   - Download file/s or part of file (specified lines)
+   - We are happy to integrate other similar software (e.g, [kibana](https://www.elastic.co/products/kibana)) as they are much mature and actively developed, as long as they can: parse residue configurations, query residue server using admin requests and tail specific log files for specific users
 
 ## Contribution
 Please feel free to create pull requests.
