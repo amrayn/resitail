@@ -43,3 +43,10 @@ body {
 #log-lines .line:nth-child(odd) {
   background: #ffe;
 }
+
+#chk-scroll {
+  right: 0;
+  position: fixed;
+  top: 0;
+  margin: 20px;
+}
