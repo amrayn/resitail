@@ -7,6 +7,7 @@
     <link rel="icon" href="/favicon.ico">
   </head>
   <body>
+    <input type="checkbox" id="chk-scroll" checked />
     <div id="log-lines"></ul>
     <script src="/scripts/socket.io-1.2.0.js"></script>
     <script src="/scripts/jquery-1.11.1.js"></script>
@@ -18,7 +19,27 @@
         Tinycon.setBubble(newLinesCount);
       }
 
+      function appendLine(html) {
+        var div = document.createElement('div');
+        div.innerHTML = html;
+        document.getElementById('log-lines').appendChild(div.children[0]);
+        newLinesCount++;
+
+        window.setTimeout(function() {
+          updateFavIcon();
+          if ($("#chk-scroll").prop("checked")) {
+            window.scrollTo(0, document.body.scrollHeight);
+          }
+        }, 800);
+      }
+
       $(function () {
+
+        $("#chk-scroll").change(function() {
+          if ($(this).prop("checked")) {
+            window.scrollTo(0, document.body.scrollHeight);
+          }
+        });
 
         window.addEventListener('focus', function() {
           newLinesCount = 0;
@@ -30,15 +51,11 @@
         socket.emit('resitail:connect', location.search);
 
         socket.on('resitail:line', function(line){
-          var div = document.createElement('div');
-          div.innerHTML = '<p class=\'line\'>' + line + '</p>';
-          document.getElementById('log-lines').appendChild(div.children[0]);
-          newLinesCount++;
+          appendLine('<p class=\'line\'>' + line + '</p>');
+        });
 
-          window.setTimeout(function() {
-            updateFavIcon();
-            window.scrollTo(0, document.body.scrollHeight);
-          }, 800);
+        socket.on('resitail:err', function(line){
+          appendLine('<p class=\'line\'><span class=\'line-err\'>' + line + '</span></p>');
         });
       });
     </script>
