@@ -1,6 +1,7 @@
 const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const http = require('http');
+const server = http.Server(app);
+const io = require('socket.io')(server);
 const fs = require('fs');
 const net = require('net');
 const tail = require('./tail');
@@ -140,6 +141,6 @@ io.on('connection', function(socket) {
   });
 });
 
-http.listen(proc.port, function() {
+server.listen(proc.port, function() {
   console.log('Started server on *:' + proc.port);
 });
