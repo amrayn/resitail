@@ -37,7 +37,7 @@ io.on('connection', function(socket) {
         decrypted = crypt.decrypt(data.toString());
         const resp = JSON.parse(decrypted);
         for (var i = 0; i < resp.length; ++i) {
-          const list = resp[i].list;
+          const list = resp[i].files;
 
           const finalList = [];
 
