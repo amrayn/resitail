@@ -52,15 +52,24 @@ io.on('connection', function(socket) {
           });
 
           tailProcess.on('line', function(data) {
-            socket.emit('resitail:line', data);
+              socket.emit('resitail:line', {
+                type: 'log',
+                data: data,
+              });
           });
 
           tailProcess.on('info', function(data) {
-            socket.emit('resitail:line', `<span class='line-info'>${data}</span>`);
+            socket.emit('resitail:line', {
+              type: 'info',
+              data: data,
+            });
           });
 
           tailProcess.on('error', function(error) {
-            socket.emit('resitail:line', `<span class='line-err'>${data}</span>`);
+            socket.emit('resitail:err', {
+              type: 'err',
+              data: data,
+            });
           });
 
           if (typeof tails[socket.id] === 'undefined') {
@@ -71,7 +80,10 @@ io.on('connection', function(socket) {
           console.log(finalList);
         }
       } catch (err) {
-        socket.emit('resitail:err', `error occurred, details: ${decrypted}`);
+        socket.emit('resitail:err', {
+          type: 'err',
+          data: `error occurred, details: ${decrypted}`,
+        });
         console.log(err);
       }
   });
