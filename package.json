@@ -1,6 +1,6 @@
 {
   "name": "resitail",
-  "version": "1.2.4",
+  "version": "1.2.9",
   "description": "Stream Residue logs to slack",
   "homepage": "https://github.com/muflihun/resitail",
   "author": "Muflihun Labs <info@muflihun.com>",
@@ -12,15 +12,14 @@
     "child_process": "^1.0.2",
     "commander": "^2.11.0",
     "events": "^1.1.1",
-    "express": "^4.16.0",
     "fs": "0.0.1-security",
-    "http": "0.0.0",
     "lodash.isempty": "^4.4.0",
+    "lodash.merge": "^4.6.0",
     "slack-node": "^0.1.8",
     "util": "^0.10.3"
   },
   "scripts": {
-    "start": "node resitail.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +33,6 @@
     "slack",
     "devops"
   ],
-  "main": "resitail",
+  "main": "index",
   "preferGlobal": true
 }

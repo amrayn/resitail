@@ -2,6 +2,7 @@ const fs = require('fs');
 const net = require('net');
 const slackbot = require('slack-node');
 const isEmpty = require('lodash.isempty');
+const merge = require('lodash.merge');
 const tail = require('./lib/tail');
 const residue_crypt = require('./lib/residue_crypt');
 const proc = require('./lib/option_parser');
@@ -32,11 +33,27 @@ const slack = new slackbot();
 slack.setWebhook(config.webhook_url);
 
 slackSend = (data, channel) => {
-    slack.webhook({
+    let request = {};
+    request.text = config.template.replace('%line', data);
+    if (config.special_cases) {
+        for (let i = 0; i < config.special_cases.length; ++i) {
+            const c = config.special_cases[i];
+            if (c.text && data.indexOf(c.text) > -1) {
+                request.attachments = [
+                    {
+                        "color": c.color,
+                        "text": request.text
+                    }
+                ];
+                request.text = null;
+                break;
+            }
+        }
+    }
+    slack.webhook(merge({
         channel: channel,
         username: config.username || 'resitail',
-        text: config.template.replace('%line', data)
-    }, (err, response) => {
+    }, request), (err, response) => {
         if (err || response.status === 'fail') {
             console.log(response.response + ' - channel: ' + channel);
         }
@@ -98,6 +115,11 @@ processResponse = (response) => {
                     files.push(list[j]);
                 }
             }
+
+            console.log('---------');
+            console.log(controller.client_id);
+            console.log(files);
+            console.log('---------');
 
             const tail_process = tail(files, {
                 buffer: 0,
