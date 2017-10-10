@@ -65,7 +65,7 @@ admin_socket.connect(residue_config.admin_port, '127.0.0.1');
 const active_processes = [];
 
 startTail = (clientId) => {
-    var request = {
+    const request = {
         _t: parseInt((new Date()).getTime() / 1000, 10),
         type: 5,
         client_id: clientId,
@@ -83,17 +83,17 @@ processResponse = (response) => {
     try {
         decrypted = crypt.decrypt(response);
         const resp = JSON.parse(decrypted);
-        for (var i = 0; i < resp.length; ++i) {
+        for (let i = 0; i < resp.length; ++i) {
             const list = resp[i].files;
 
             const controller = {
                 logger_id: resp[i].logger_id,
-                client_id: 'muflihun00102030',
+                client_id: resp[i].client_id,
             };
 
             const files = [];
 
-            for (var j = 0; j < list.length; ++j) {
+            for (let j = 0; j < list.length; ++j) {
                 if (fs.existsSync(list[j])) {
                     files.push(list[j]);
                 }
