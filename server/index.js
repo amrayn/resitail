@@ -7,7 +7,7 @@ const net = require('net');
 const tail = require('./tail');
 const residue_crypt = require('./residue_crypt');
 const proc = require('./option_parser');
-const slack = require('./slackbot');
+const slackbot = require('./slackbot');
 
 proc.parse(process.argv);
 if (proc.config === false) {
@@ -17,7 +17,7 @@ if (proc.config === false) {
 
 const residue_config = JSON.parse(fs.readFileSync(proc.config));
 const slack_config = proc.slackconfig ? JSON.parse(fs.readFileSync(proc.slackconfig)) : null;
-const slackbot = slack.SlackBot(slack_config);
+const slack = slackbot(slack_config);
 const crypt = residue_crypt(residue_config);
 
 app.get('*', function(req, res, next) {
@@ -61,7 +61,7 @@ io.on('connection', function(socket) {
                 data: data,
               });
               if (slackbot) {
-                slackbot.send(data);
+                slack.send(data);
               }
           });
 
@@ -71,7 +71,7 @@ io.on('connection', function(socket) {
               data: data,
             });
             if (slackbot) {
-              slackbot.send(data);
+              slack.send(data);
             }
           });
 
@@ -81,7 +81,7 @@ io.on('connection', function(socket) {
               data: error,
             });
             if (slackbot) {
-              slackbot.send(data);
+              slack.send(data);
             }
           });
 
