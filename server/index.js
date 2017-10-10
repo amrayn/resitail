@@ -30,7 +30,9 @@ if (slack_config) {
       username: 'resitail',
       text: `\`${data}\``
     }, function(err, response) {
-      console.log(response);
+      if (err || response.status === 'fail') {
+        console.log(response.response);
+      }
     });
   }
 }
@@ -47,13 +49,14 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/web/index.html');
 });
 
-function sendData(event, type, data, logger) {
-    socket.emit(event, {
+function sendData(socket, evt, type, data, controller) {
+    socket.emit(evt, {
       type: type,
       data: data,
     });
-    if (slackSend && logger) {
-      slackSend(data, logger.id);
+    if (slackSend && controller) {
+      slackSend(data, controller.logger_id);
+      slackSend(data, controller.client_id);
     }
 }
 
@@ -67,9 +70,8 @@ io.on('connection', function(socket) {
         const resp = JSON.parse(decrypted);
         for (var i = 0; i < resp.length; ++i) {
           const list = resp[i].files;
-          const logger = {
-            id: resp[i].logger_id,
-            files: list
+          const controller = {
+            logger_id: resp[i].logger_id,
           };
 
           const finalList = [];
@@ -85,15 +87,15 @@ io.on('connection', function(socket) {
           });
 
           tailProcess.on('line', function(data) {
-			  sendData('resitail:line', 'log', data, logger);
+			  sendData(socket, 'resitail:line', 'log', data, logger);
           });
 
           tailProcess.on('info', function(data) {
-			  sendData('resitail:line', 'info', data, logger);
+			  sendData(socket, 'resitail:line', 'info', data, logger);
           });
 
           tailProcess.on('error', function(error) {
-			  sendData('resitail:err', 'err', error, logger);
+			  sendData(socket, 'resitail:err', 'err', error, logger);
           });
 
           if (typeof tails[socket.id] === 'undefined') {
@@ -103,7 +105,7 @@ io.on('connection', function(socket) {
           tails[socket.id].push(tailProcess);
         }
       } catch (err) {
-		sendData('resitail:err', 'err', `error occurred, details: ${decrypted}`);
+		sendData(socket, 'resitail:err', 'err', `error occurred, details: ${decrypted}`);
         console.log(err);
       }
   });
