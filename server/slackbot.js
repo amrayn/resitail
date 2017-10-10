@@ -14,9 +14,10 @@ const SlackBot = function(config) {
       method : 'POST',
       body   : data
     }, function(error, response, body) {
-      console.log(error ? error : body);
+      console.log(error ? "error: " + error : "body: " + body);
     });
   }
+  return this;
 }
 
 module.exports = SlackBot;
