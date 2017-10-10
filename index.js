@@ -32,9 +32,13 @@ const slack = new slackbot();
 
 slack.setWebhook(config.webhook_url);
 
+formatText = (data, template) => template.replace('%line', data).
+                                          replace("&", "&amp;").
+                                          replace("<", "&lt;").
+                                          replace(">", "&gt;");
+
 slackSend = (data, channel) => {
     let request = {};
-    request.text = config.template.replace('%line', data);
     if (config.special_cases) {
         for (let i = 0; i < config.special_cases.length; ++i) {
             const c = config.special_cases[i];
@@ -42,13 +46,17 @@ slackSend = (data, channel) => {
                 request.attachments = [
                     {
                         "color": c.color,
-                        "text": request.text
+                        "text": formatText(data, c.template || config.template),
+                        "pretext": c.message ? formatText(data, c.message) : null,
+                        "mrkdwn_in": ["text", "pretext"]
                     }
                 ];
-                request.text = null;
                 break;
             }
         }
+    }
+    if (!request.attachments) {
+        request.text = formatText(data, config.template || '%line');
     }
     slack.webhook(merge({
         channel: channel,
@@ -115,11 +123,6 @@ processResponse = (response) => {
                     files.push(list[j]);
                 }
             }
-
-            console.log('---------');
-            console.log(controller.client_id);
-            console.log(files);
-            console.log('---------');
 
             const tail_process = tail(files, {
                 buffer: 0,

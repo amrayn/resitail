@@ -8,6 +8,7 @@
     "residue_config" : "<residue_config_file>",
     "template": "%line",
     "special_cases" : [
-        { "text" : " ERROR ", "color" : "#ff0000" }
+        { "text" : " ERROR ", "color" : "#ff0000", "message" : "*ERROR*:interrobang:" },
+        { "text" : " INFO ", "color" : "#00ff00", "template" : "*INFO>* `%line`" }
     ]
 }
