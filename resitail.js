@@ -34,11 +34,11 @@ slack.setWebhook(config.webhook_url);
 slackSend = (data, channel) => {
     slack.webhook({
         channel: channel,
-        username: 'resitail',
+        username: config.username || 'resitail',
         text: config.template.replace('%line', data)
     }, (err, response) => {
         if (err || response.status === 'fail') {
-            console.log(response.response);
+            console.log(response.response + ' - channel: ' + channel);
         }
     });
 }

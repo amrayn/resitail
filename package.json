@@ -1,7 +1,7 @@
 {
   "name": "resitail",
-  "version": "1.2.1",
-  "description": "Residue slack bot",
+  "version": "1.2.3",
+  "description": "Stream Residue logs to slack",
   "homepage": "https://github.com/muflihun/resitail",
   "author": "Muflihun Labs <info@muflihun.com>",
   "license": "Apache-2.0",
@@ -15,10 +15,8 @@
     "express": "^4.16.0",
     "fs": "0.0.1-security",
     "http": "0.0.0",
-    "lodash.find": "^4.6.0",
     "lodash.isempty": "^4.4.0",
     "slack-node": "^0.1.8",
-    "socket.io": "^1.7.4",
     "util": "^0.10.3"
   },
   "scripts": {
