@@ -3,9 +3,7 @@
 </p>
 
 # Overview
-You can use resitail to stream residue logs on your browser.
-
-Some parts of resitail uses code from [frontail](https://github.com/mthenw/frontail)
+Resitail is a slack-bot that streams your logs to slack
 
 [![Version](https://img.shields.io/npm/v/resitail.svg)](https://www.npmjs.com/package/resitail)
 [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
@@ -13,36 +11,10 @@ Some parts of resitail uses code from [frontail](https://github.com/mthenw/front
 
 ## Quick start
 
-- `npm i resitail -g`
-- `sudo resitail --config <residue_config> --port <port, default: 3000>`
-- visit [http://127.0.0.1:3000](http://127.0.0.1:3000)
+- `npm install -g resitail`
+- `sudo resitail --config <config>`
 
 Notice the `sudo`, this is because all the files written by residue server will need sudo access as they may be owned by one user or the other with limited permissions. We need to be able to read all of these log files.
-
-## Installation
-
-    npm i resitail -g
-    
-Web interface runs on **http://127.0.0.1:[port]**
-
-## Features
-Currently, resitail is very limited to the following features:
- * Simple tailing using basic filters ([`clientId`](http://residue-demo.muflihun.com/?clientId=muflihun00102030), [`loggerId`](http://residue-demo.muflihun.com/?clientId=muflihun00102030&loggerId=default) and [`levels`](http://residue-demo.muflihun.com/?clientId=muflihun00102030&loggerId=sample-app&levels=info))
- 
-Resitail aims to provide (but not limited to):
-* Server:
-   - Fully featured log streaming on browser
-   - Optional HTTPS support
-   - Optional basic authentication
-   - Login functionality to keep track of user-clients map so that user can login using their own credentials and display list of clients, loggers and logging levels
-* Web Interface
-   - Filters and searching for logs
-   - Highlighting logs using specific patterns (preset patterns and user-provided patterns)
-   - Download file/s or part of file (specified lines)
-   - We are happy to integrate other similar software (e.g, [kibana](https://www.elastic.co/products/kibana)) as they are much mature and actively developed, as long as they can: parse residue configurations, query residue server using admin requests and tail specific log files for specific users
-
-## Contribution
-Please feel free to create pull requests.
 
 ## License
 ```

@@ -1,0 +1,10 @@
+{
+    "webhook_url" : "<obtain from https://my.slack.com/services/new/incoming-webhook>",
+    "channels" : {
+        "to_client" : true,
+        "to_logger" : true
+    },
+    "port" : 3000,
+    "residue_config" : "<residue_config_file>",
+    "template" : "`%line`"
+}
