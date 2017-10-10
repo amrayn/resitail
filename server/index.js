@@ -71,54 +71,61 @@ function startTail(clientId) {
     admin_socket.write(encryptedRequest, 'utf-8');
 }
 
-admin_socket.on('data', function(data, cb) {
-
-  let decrypted = '<failed>';
-  try {
-    decrypted = crypt.decrypt(data.toString());
-    const resp = JSON.parse(decrypted);
-    for (var i = 0; i < resp.length; ++i) {
-      const list = resp[i].files;
+processResponse = function(response) {
+    let decrypted = '<failed>';
+    try {
+      decrypted = crypt.decrypt(response);
+      const resp = JSON.parse(decrypted);
+      for (var i = 0; i < resp.length; ++i) {
+        const list = resp[i].files;
 	  
-      const controller = {
-        logger_id: resp[i].logger_id,
-		client_id: 'muflihun00102030',
-      };
+        const controller = {
+          logger_id: resp[i].logger_id,
+  		client_id: 'muflihun00102030',
+        };
 
-      const files = [];
+        const files = [];
 
-      for (var j = 0; j < list.length; ++j) {
-        if (fs.existsSync(list[j])) {
-          files.push(list[j]);
+        for (var j = 0; j < list.length; ++j) {
+          if (fs.existsSync(list[j])) {
+            files.push(list[j]);
+          }
         }
+
+        const tail_process = tail(files, {
+          buffer: 10,
+        });
+
+        tail_process.on('line', function(data) {
+            sendData('resitail:line', 'log', data, controller);
+        });
+
+        tail_process.on('info', function(data) {
+            sendData('resitail:line', 'info', data, controller);
+        });
+
+        tail_process.on('error', function(error) {
+            sendData('resitail:err', 'err', error, controller);
+        });
+
+        if (!active_processes[controller.client_id]) {
+          active_processes[controller.client_id] = [];
+        }
+
+        active_processes[controller.client_id].push(tail_process);
       }
-
-      const tail_process = tail(files, {
-        buffer: 10,
-      });
-
-      tail_process.on('line', function(data) {
-          sendData('resitail:line', 'log', data, controller);
-      });
-
-      tail_process.on('info', function(data) {
-          sendData('resitail:line', 'info', data, controller);
-      });
-
-      tail_process.on('error', function(error) {
-          sendData('resitail:err', 'err', error, controller);
-      });
-
-      if (!active_processes[controller.client_id]) {
-        active_processes[controller.client_id] = [];
+      } catch (err) {
+        sendData('resitail:err', 'err', `error occurred, details: ${decrypted}`);
+        console.log(err);
       }
+}
 
-      active_processes[controller.client_id].push(tail_process);
-    }
-    } catch (err) {
-      sendData('resitail:err', 'err', `error occurred, details: ${decrypted}`);
-      console.log(err);
-    }
+admin_socket.on('data', function(data, cb) {
+  let resp = data.toString().split("\r\n\r\n");
+  
+  for (var i = 0; i < resp.length; ++i) {
+	  processResponse(resp[i] + "\r\n\r\n");
+  }
 });
 
 // start all the tails
