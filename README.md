@@ -9,6 +9,9 @@ Resitail is a slack-bot that streams your logs to slack
 [![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
+## Screenshot
+[![Demo](demo.gif)](/demo.gif)
+
 ## Quick start
 
 - `npm install -g resitail`
