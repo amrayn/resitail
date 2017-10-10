@@ -20,8 +20,8 @@ if (proc.residue_config === false || proc.slack_config === false) {
 const slack_config = proc.slack_config ? JSON.parse(fs.readFileSync(proc.slack_config)) : null;
 const residue_config = JSON.parse(fs.readFileSync(proc.residue_config));
 const crypt = residue_crypt(residue_config);
-const admin_socket = new net.Socket();
 const slack = new slackbot();
+
 slack.setWebhook(slack_config.webhook_url);
 
 slackSend = function(data, channel) {
@@ -52,8 +52,10 @@ if (isEmpty(residue_config.known_clients)) {
 	process.exit();
 }
 
-const active_processes = [];
+const admin_socket = new net.Socket();
+admin_socket.connect(residue_config.admin_port, '127.0.0.1');
 
+const active_processes = [];
 
 /**
  * Sends request to admin request handler to retrieve all the loggers for client
@@ -65,10 +67,8 @@ function startTail(clientId) {
 	  client_id: clientId,
     };
 
-    admin_socket.connect(residue_config.admin_port, '127.0.0.1', function() {
-      const encryptedRequest = crypt.encrypt(request);
-      admin_socket.write(encryptedRequest, 'utf-8');
-    });
+    const encryptedRequest = crypt.encrypt(request);
+    admin_socket.write(encryptedRequest, 'utf-8');
 }
 
 admin_socket.on('data', function(data, cb) {
