@@ -71,10 +71,18 @@ slackSend = (data, channel) => {
 sendData = (evt, type, data, controller) => {
     if (controller) {
         if (config.channels.to_logger) {
-            slackSend(data, controller.logger_id);
+            if (config.loggers_ignore_list && config.loggers_ignore_list.indexOf(controller.logger_id) > -1) {
+                // ignore
+            } else {
+                slackSend(data, controller.logger_id);
+            }
         }
         if (config.channels.to_client) {
-            slackSend(data, controller.client_id);
+            if (config.clients_ignore_list && config.clients_ignore_list.indexOf(controller.client_id) > -1) {
+                //ignore
+            } else {
+                slackSend(data, controller.client_id);
+            }
         }
     }
 }
