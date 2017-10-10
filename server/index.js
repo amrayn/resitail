@@ -4,163 +4,127 @@ const server = http.Server(app);
 const io = require('socket.io')(server);
 const fs = require('fs');
 const net = require('net');
+const slackbot = require('slack-node');
+const find = require('lodash.find');
+const isEmpty = require('lodash.isempty');
 const tail = require('./tail');
 const residue_crypt = require('./residue_crypt');
 const proc = require('./option_parser');
-const slackbot = require('slack-node');
 
 proc.parse(process.argv);
-if (proc.config === false) {
-  console.error('No config file provided\nresitail --config <residue_config> --port <port> [--slackconfig <slack_config>]\n');
+if (proc.residue_config === false || proc.slack_config === false) {
+  console.error('ERR: No config file provided\nUsage: resitail --residue_config <residue_config> --slack_config <slack_config> [--port <port>]\n');
   process.exit();
 }
 
-const residue_config = JSON.parse(fs.readFileSync(proc.config));
+const slack_config = proc.slack_config ? JSON.parse(fs.readFileSync(proc.slack_config)) : null;
+const residue_config = JSON.parse(fs.readFileSync(proc.residue_config));
 const crypt = residue_crypt(residue_config);
+const admin_socket = new net.Socket();
+const slack = new slackbot();
+slack.setWebhook(slack_config.webhook_url);
 
-const slack_config = proc.slackconfig ? JSON.parse(fs.readFileSync(proc.slackconfig)) : null;
-
-let slackSend = null;
-if (slack_config) {
-  const slack = new slackbot();
-  slack.setWebhook(slack_config.webhook_url);
-  slackSend = function(data, channel) {
-    slack.webhook({
-      channel: channel,
-      username: 'resitail',
-      text: `\`${data}\``
-    }, function(err, response) {
-      if (err || response.status === 'fail') {
-        console.log(response.response);
-      }
-    });
-  }
+slackSend = function(data, channel) {
+  slack.webhook({
+    channel: channel,
+    username: 'resitail',
+    text: `\`${data}\``
+  }, function(err, response) {
+    if (err || response.status === 'fail') {
+      console.log(response.response);
+    }
+  });
 }
 
-app.get('*', function(req, res, next) {
-  if (req.originalUrl.indexOf('/?') === -1) {
-    res.sendFile(__dirname + '/web/' + req.originalUrl);
-  } else {
-    return next();
-  }
-});
-
-app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/web/index.html');
-});
-
-function sendData(socket, evt, type, data, controller) {
-    socket.emit(evt, {
-      type: type,
-      data: data,
-    });
-    if (slackSend && controller) {
-      slackSend(data, controller.logger_id);
-      slackSend(data, controller.client_id);
+sendData = function(evt, type, data, controller) {
+    if (controller) {
+		if (slack_config.to_logger) {
+	        slackSend(data, controller.logger_id);
+	    }
+	    if (slack_config.to_client) {
+	        slackSend(data, controller.client_id);
+	    }
     }
 }
 
-io.on('connection', function(socket) {
-  const tails = {};
-  const residue_connection = new net.Socket();
-  residue_connection.on('data', function(data, cb) {
-      let decrypted = '<failed>';
-      try {
-        decrypted = crypt.decrypt(data.toString());
-        const resp = JSON.parse(decrypted);
-        for (var i = 0; i < resp.length; ++i) {
-          const list = resp[i].files;
-          const controller = {
-            logger_id: resp[i].logger_id,
-          };
+if (isEmpty(residue_config.known_clients)) {
+	console.error('ERR: No known clients specified in residue config');
+	process.exit();
+}
 
-          const finalList = [];
+const active_processes = [];
 
-          for (var j = 0; j < list.length; ++j) {
-            if (fs.existsSync(list[j])) {
-              finalList.push(list[j]);
-            }
-          }
 
-          const tailProcess = tail(finalList, {
-            buffer: 10,
-          });
-
-          tailProcess.on('line', function(data) {
-			  sendData(socket, 'resitail:line', 'log', data, logger);
-          });
-
-          tailProcess.on('info', function(data) {
-			  sendData(socket, 'resitail:line', 'info', data, logger);
-          });
-
-          tailProcess.on('error', function(error) {
-			  sendData(socket, 'resitail:err', 'err', error, logger);
-          });
-
-          if (typeof tails[socket.id] === 'undefined') {
-            tails[socket.id] = [];
-          }
-
-          tails[socket.id].push(tailProcess);
-        }
-      } catch (err) {
-		sendData(socket, 'resitail:err', 'err', `error occurred, details: ${decrypted}`);
-        console.log(err);
-      }
-  });
-
-  residue_connection.on('close', function() {
-      console.log('Remote connection closed!');
-  });
-
-  residue_connection.on('error', function(error) {
-      console.log('Error occurred while connecting to residue server');
-      console.log(error);
-  });
-
-  socket.on('resitail:connect', function(parameters) {
-    var params = {};
-    var query = parameters.substr(1).split('&');
-    for (var i = 0; i < query.length; ++i) {
-        params[query[i].split('=')[0]] = query[i].split('=')[1];
-    }
-
+/**
+ * Sends request to admin request handler to retrieve all the loggers for client
+ */
+function startTail(clientId) {
     var request = {
       _t: parseInt((new Date()).getTime() / 1000, 10),
       type: 5,
+	  client_id: clientId,
     };
 
-    if (params.clientId) {
-      request.client_id = params.clientId;
-    }
-    if (params.loggerId) {
-      request.logger_id = params.loggerId;
-    }
-    if (params.levels) {
-      request.logging_levels = params.levels.split(',');
-    }
-
-    residue_connection.connect(residue_config.admin_port, 'localhost', function() {
+    admin_socket.connect(residue_config.admin_port, '127.0.0.1', function() {
       const encryptedRequest = crypt.encrypt(request);
-      console.log('Request: ');
-      console.log(encryptedRequest);
-      residue_connection.write(encryptedRequest, 'utf-8');
+      admin_socket.write(encryptedRequest, 'utf-8');
     });
+}
 
-  });
+admin_socket.on('data', function(data, cb) {
 
-  socket.on('disconnect', function() {
-    if (typeof tails[socket.id] === 'undefined') {
-      return;
+  let decrypted = '<failed>';
+  try {
+    decrypted = crypt.decrypt(data.toString());
+    const resp = JSON.parse(decrypted);
+    for (var i = 0; i < resp.length; ++i) {
+      const list = resp[i].files;
+	  
+      const controller = {
+        logger_id: resp[i].logger_id,
+		client_id: 'muflihun00102030',
+      };
+
+      const files = [];
+
+      for (var j = 0; j < list.length; ++j) {
+        if (fs.existsSync(list[j])) {
+          files.push(list[j]);
+        }
+      }
+
+      const tail_process = tail(files, {
+        buffer: 10,
+      });
+
+      tail_process.on('line', function(data) {
+          sendData('resitail:line', 'log', data, controller);
+      });
+
+      tail_process.on('info', function(data) {
+          sendData('resitail:line', 'info', data, controller);
+      });
+
+      tail_process.on('error', function(error) {
+          sendData('resitail:err', 'err', error, controller);
+      });
+
+      if (!active_processes[controller.client_id]) {
+        active_processes[controller.client_id] = [];
+      }
+
+      active_processes[controller.client_id].push(tail_process);
     }
-    console.log(socket.id);
-    for (var i = 0; i < tails[socket.id].length; ++i) {
-      tails[socket.id][i].kill();
+    } catch (err) {
+      sendData('resitail:err', 'err', `error occurred, details: ${decrypted}`);
+      console.log(err);
     }
-    tails[socket.id] = null;
-  });
 });
+
+// start all the tails
+for (let i = 0; i < residue_config.known_clients.length; ++i) {
+	startTail(residue_config.known_clients[i].client_id);
+}
 
 server.listen(proc.port, function() {
   console.log('Started server on *:' + proc.port);

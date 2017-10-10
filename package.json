@@ -1,6 +1,6 @@
 {
   "name": "resitail",
-  "version": "1.1.16",
+  "version": "1.1.17",
   "description": "Stream residue logs to the browser",
   "homepage": "https://github.com/muflihun/resitail",
   "author": "Muflihun Labs <info@muflihun.com>",
@@ -15,7 +15,8 @@
     "express": "^4.16.0",
     "fs": "0.0.1-security",
     "http": "0.0.0",
-    "request": "^2.83.0",
+    "lodash.find": "^4.6.0",
+    "lodash.isempty": "^4.4.0",
     "slack-node": "^0.1.8",
     "socket.io": "^1.7.4",
     "util": "^0.10.3"
