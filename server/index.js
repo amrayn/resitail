@@ -7,7 +7,7 @@ const net = require('net');
 const tail = require('./tail');
 const residue_crypt = require('./residue_crypt');
 const proc = require('./option_parser');
-const slackbot = require('./slackbot');
+const slackbot = require('slack-node');
 
 proc.parse(process.argv);
 if (proc.config === false) {
@@ -16,9 +16,24 @@ if (proc.config === false) {
 }
 
 const residue_config = JSON.parse(fs.readFileSync(proc.config));
-const slack_config = proc.slackconfig ? JSON.parse(fs.readFileSync(proc.slackconfig)) : null;
-const slack = slackbot(slack_config);
 const crypt = residue_crypt(residue_config);
+
+const slack_config = proc.slackconfig ? JSON.parse(fs.readFileSync(proc.slackconfig)) : null;
+
+let slackSend = null;
+if (slack_config) {
+  const slack = new slackbot();
+  slack.setWebhook(slack_config.webhook_url);
+  slackSend = function(data, channel) {
+    slack.webhook({
+      channel: channel,
+      username: 'resitail',
+      text: `\`${data}\``
+    }, function(err, response) {
+      console.log(response);
+    });
+  }
+}
 
 app.get('*', function(req, res, next) {
   if (req.originalUrl.indexOf('/?') === -1) {
@@ -34,14 +49,23 @@ app.get('/', function(req, res) {
 
 io.on('connection', function(socket) {
   const tails = {};
+  const loggers = {};
   const residue_connection = new net.Socket();
   residue_connection.on('data', function(data, cb) {
       let decrypted = '<failed>';
+      if (loggers[socket.id] === 'undefined') {
+          loggers[socket.id] = {};
+      }
       try {
         decrypted = crypt.decrypt(data.toString());
         const resp = JSON.parse(decrypted);
         for (var i = 0; i < resp.length; ++i) {
+          const logger = resp[i].logger_id;
           const list = resp[i].files;
+          loggers[socket.id] = {
+            id: logger,
+            files: list
+          };
 
           const finalList = [];
 
@@ -60,8 +84,9 @@ io.on('connection', function(socket) {
                 type: 'log',
                 data: data,
               });
-              if (slackbot) {
-                slack.send(data);
+              if (slackSend) {
+                const map = loggers[socket.id];
+                slackSend(data, 'log');
               }
           });
 
@@ -70,8 +95,8 @@ io.on('connection', function(socket) {
               type: 'info',
               data: data,
             });
-            if (slackbot) {
-              slack.send(data);
+            if (slackSend) {
+              slackSend(data, 'log');
             }
           });
 
@@ -80,8 +105,8 @@ io.on('connection', function(socket) {
               type: 'err',
               data: error,
             });
-            if (slackbot) {
-              slack.send(data);
+            if (slackSend) {
+              slackSend(data, 'log');
             }
           });
 
