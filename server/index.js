@@ -11,7 +11,7 @@ const slackbot = require('slack-node');
 
 proc.parse(process.argv);
 if (proc.config === false) {
-  console.error('No config file provided. resitail --config <residue_config> --port <port> [--slackconfig <slack_config>]');
+  console.error('No config file provided\nresitail --config <residue_config> --port <port> [--slackconfig <slack_config>]\n');
   process.exit();
 }
 
@@ -47,23 +47,28 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/web/index.html');
 });
 
+function sendData(event, type, data, logger) {
+    socket.emit(event, {
+      type: type,
+      data: data,
+    });
+    if (slackSend && logger) {
+      slackSend(data, logger.id);
+    }
+}
+
 io.on('connection', function(socket) {
   const tails = {};
-  const loggers = {};
   const residue_connection = new net.Socket();
   residue_connection.on('data', function(data, cb) {
       let decrypted = '<failed>';
-      if (loggers[socket.id] === 'undefined') {
-          loggers[socket.id] = {};
-      }
       try {
         decrypted = crypt.decrypt(data.toString());
         const resp = JSON.parse(decrypted);
         for (var i = 0; i < resp.length; ++i) {
-          const logger = resp[i].logger_id;
           const list = resp[i].files;
-          loggers[socket.id] = {
-            id: logger,
+          const logger = {
+            id: resp[i].logger_id,
             files: list
           };
 
@@ -80,34 +85,15 @@ io.on('connection', function(socket) {
           });
 
           tailProcess.on('line', function(data) {
-              socket.emit('resitail:line', {
-                type: 'log',
-                data: data,
-              });
-              if (slackSend) {
-                const map = loggers[socket.id];
-                slackSend(data, 'log');
-              }
+			  sendData('resitail:line', 'log', data, logger);
           });
 
           tailProcess.on('info', function(data) {
-            socket.emit('resitail:line', {
-              type: 'info',
-              data: data,
-            });
-            if (slackSend) {
-              slackSend(data, 'log');
-            }
+			  sendData('resitail:line', 'info', data, logger);
           });
 
           tailProcess.on('error', function(error) {
-            socket.emit('resitail:err', {
-              type: 'err',
-              data: error,
-            });
-            if (slackSend) {
-              slackSend(data, 'log');
-            }
+			  sendData('resitail:err', 'err', error, logger);
           });
 
           if (typeof tails[socket.id] === 'undefined') {
@@ -115,13 +101,9 @@ io.on('connection', function(socket) {
           }
 
           tails[socket.id].push(tailProcess);
-          console.log(finalList);
         }
       } catch (err) {
-        socket.emit('resitail:err', {
-          type: 'err',
-          data: `error occurred, details: ${decrypted}`,
-        });
+		sendData('resitail:err', 'err', `error occurred, details: ${decrypted}`);
         console.log(err);
       }
   });
