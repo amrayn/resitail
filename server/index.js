@@ -72,6 +72,9 @@ function startTail(clientId) {
 }
 
 processResponse = function(response) {
+	if (response.trim().length === 0) {
+		return;
+	}
     let decrypted = '<failed>';
     try {
       decrypted = crypt.decrypt(response);
@@ -122,7 +125,6 @@ processResponse = function(response) {
 
 admin_socket.on('data', function(data, cb) {
   let resp = data.toString().split("\r\n\r\n");
-  
   for (var i = 0; i < resp.length; ++i) {
 	  processResponse(resp[i] + "\r\n\r\n");
   }
