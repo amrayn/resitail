@@ -7,14 +7,17 @@ const net = require('net');
 const tail = require('./tail');
 const residue_crypt = require('./residue_crypt');
 const proc = require('./option_parser');
+const slack = require('./slackbot');
 
 proc.parse(process.argv);
 if (proc.config === false) {
-  console.error('No config file provided. resitail --config <residue_config> --port <port>');
+  console.error('No config file provided. resitail --config <residue_config> --port <port> [--slackconfig <slack_config>]');
   process.exit();
 }
 
 const residue_config = JSON.parse(fs.readFileSync(proc.config));
+const slack_config = proc.slackconfig ? JSON.parse(fs.readFileSync(proc.slackconfig)) : null;
+const slackbot = slack.SlackBot(slack_config);
 const crypt = residue_crypt(residue_config);
 
 app.get('*', function(req, res, next) {
@@ -57,6 +60,9 @@ io.on('connection', function(socket) {
                 type: 'log',
                 data: data,
               });
+              if (slackbot) {
+                slackbot.send(data);
+              }
           });
 
           tailProcess.on('info', function(data) {
@@ -64,13 +70,19 @@ io.on('connection', function(socket) {
               type: 'info',
               data: data,
             });
+            if (slackbot) {
+              slackbot.send(data);
+            }
           });
 
           tailProcess.on('error', function(error) {
             socket.emit('resitail:err', {
               type: 'err',
-              data: data,
+              data: error,
             });
+            if (slackbot) {
+              slackbot.send(data);
+            }
           });
 
           if (typeof tails[socket.id] === 'undefined') {
