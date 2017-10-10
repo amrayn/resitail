@@ -10,7 +10,7 @@ Resitail is a slack-bot that streams your logs to slack
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 ## Screenshot
-[![Demo](demo.gif)](/demo.gif)
+[![Demo](demo.gif?v2)](/demo.gif)
 
 ## Quick start
 
