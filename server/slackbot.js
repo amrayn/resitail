@@ -3,7 +3,7 @@ const request = require('request');
 const SlackBot = function(config) {
   if (!config) return null;
 
-  this._url = `https://${config.orgdomain}.slack.com/services/hooks/slackbot?token=${config.token}&channel=%23${config.channel}`;
+  this._url = `https://${config.orgdomain}.slack.com/services/hooks/slackbot?token=${config.token}&channel=${config.channel}`;
 
   this.send = function(data) {
     if (!data || data.length <= 0) {
