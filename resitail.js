@@ -100,7 +100,7 @@ processResponse = (response) => {
             }
 
             const tail_process = tail(files, {
-                buffer: 10,
+                buffer: 0,
             });
 
             tail_process.on('line', data => {
