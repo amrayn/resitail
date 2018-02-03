@@ -88,7 +88,9 @@ const slackSend = (data, channel) => {
         username: config.username || 'resitail',
     }, request), (err, response) => {
         if (err || response.status === 'fail') {
-            console.log(response.response + ' - channel: ' + channel);
+            if (typeof response !== "undefined") {
+                console.log(response.response + ' - channel: ' + channel);
+            }
         }
     });
 }
