@@ -4,7 +4,6 @@
         "to_client" : true,
         "to_logger" : true
     },
-    "port" : 3000,
     "residue_config" : "<residue_config_file>",
     "clients_ignore_list" : [],
     "loggers_ignore_list" : [],

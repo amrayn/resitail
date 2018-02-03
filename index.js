@@ -1,3 +1,26 @@
+//
+//  index.js
+//  Resitail
+//
+//  Copyright 2017-present Muflihun Labs
+//
+//  Author: @abumusamq
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+"use strict";
+
 const fs = require('fs');
 const net = require('net');
 const slackbot = require('slack-node');
@@ -20,10 +43,12 @@ if (!config.residue_config) {
     console.error('Invalid configuration. Missing: residue_config');
     process.exit();
 }
+
 if (!config.channels) {
     console.error('Invalid configuration. Missing: channels');
     process.exit();
 }
+
 const residue_config = JSON.parse(fs.readFileSync(config.residue_config));
 const crypt = residue_crypt(residue_config);
 const packet_delimiter = '\r\n\r\n';
@@ -32,12 +57,12 @@ const slack = new slackbot();
 
 slack.setWebhook(config.webhook_url);
 
-formatText = (data, template) => template.replace('%line', data).
+const formatText = (data, template) => template.replace('%line', data).
                                           replace("&", "&amp;").
                                           replace("<", "&lt;").
                                           replace(">", "&gt;");
 
-slackSend = (data, channel) => {
+const slackSend = (data, channel) => {
     let request = {};
     if (config.special_cases) {
         for (let i = 0; i < config.special_cases.length; ++i) {
@@ -68,7 +93,7 @@ slackSend = (data, channel) => {
     });
 }
 
-sendData = (evt, type, data, controller) => {
+const sendData = (evt, type, data, controller) => {
     if (controller) {
         if (config.channels.to_logger) {
             if (config.loggers_ignore_list && config.loggers_ignore_list.indexOf(controller.logger_id) > -1) {
@@ -97,7 +122,8 @@ admin_socket.connect(residue_config.admin_port, '127.0.0.1');
 
 const active_processes = [];
 
-startTail = (clientId) => {
+const startTail = (clientId) => {
+    console.log(`Start [${clientId}]`);
     const request = {
         _t: parseInt((new Date()).getTime() / 1000, 10),
         type: 5,
@@ -108,7 +134,7 @@ startTail = (clientId) => {
     admin_socket.write(encryptedRequest, 'utf-8');
 }
 
-processResponse = (response) => {
+const processResponse = (response) => {
     if (response.trim().length === 0) {
         return;
     }
