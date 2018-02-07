@@ -3,25 +3,22 @@
 </p>
 
 # Overview
-Resitail is a slack webhook that streams your logs to slack
+Resitail is a slack webhook that streams your [residue](https://github.com/muflihun/residue) logs to slack
 
 [![Version](https://img.shields.io/npm/v/resitail.svg)](https://www.npmjs.com/package/resitail)
-[![GitHub license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
+[![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
-
-## Screenshot
-[![Demo](demo.gif?v2)](/demo.gif)
 
 ## Quick start
 
 - `npm install -g resitail`
 - `sudo resitail --config <config>`
 
-Notice the `sudo`, this is because all the files written by residue server will need sudo access as they may be owned by one user or the other with limited permissions. We need to be able to read all of these log files.
+Notice the `sudo`, this is because all the files written by residue server will need sudo access as they may be owned by one user or another with limited permissions. Resitail needs to be able to read all of these log files.
 
 ## License
 ```
-Copyright 2017 Muflihun Labs
+Copyright 2017-present Muflihun Labs
 
 https://github.com/muflihun/
 https://muflihun.com
