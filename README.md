@@ -21,8 +21,8 @@ Notice the `sudo`, this is because all the files written by residue server will 
 Copyright 2017-present Muflihun Labs
 
 https://github.com/muflihun/
-https://muflihun.com
-https://muflihun.github.io
+https://muflihun.com/
+https://muflihun.github.io/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
