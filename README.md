@@ -3,7 +3,7 @@
 </p>
 
 # Overview
-Resitail is a slack webhook that streams your [residue](https://github.com/muflihun/residue) logs to slack
+Resitail is a [slack](https://slack.com/) webhook that streams your [residue](https://github.com/muflihun/residue) logs to slack.
 
 [![Version](https://img.shields.io/npm/v/resitail.svg)](https://www.npmjs.com/package/resitail)
 [![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
