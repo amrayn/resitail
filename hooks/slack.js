@@ -62,12 +62,12 @@ function SlackHook(config) {
             request.text = this.formatText(data.line, this.config.template || '%line');
         }
         this.slack.webhook(merge({
-            channel: data.channel,
+            channel: data.channel_name,
             username: this.config.username || 'resitail',
         }, request), (err, response) => {
             if (err || response.status === 'fail') {
                 if (typeof response !== "undefined") {
-                    console.log(response.response + ' - channel: ' + data.channel);
+                    console.log(response.response + ' - channel: ' + data.channel_name);
                 }
             }
         });
