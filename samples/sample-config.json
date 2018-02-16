@@ -23,11 +23,23 @@
         {
             "name": "console",
             "path": "./hooks/console",
-            "enabled": true,
+            "enabled": false,
             "config": {
                 "channels" : {
                     "to_client" : true,
                     "to_logger" : true
+                }
+            }
+        },
+        {
+            "name": "browser",
+            "path": "./hooks/browser/browser",
+            "enabled": true,
+            "config": {
+                "port": 3000,
+                "channels" : {
+                    "to_client" : true,
+                    "to_logger" : false
                 }
             }
         }
