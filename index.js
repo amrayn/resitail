@@ -77,7 +77,8 @@ const sendData = (evt, type, line, controller) => {
                     hook.send({
                         line,
                         'channel': 'logger',
-                        'channel_name': controller.logger_id
+                        'channel_name': controller.logger_id,
+                        'client_id': controller.client_id
                     });
                 }
             }
@@ -86,7 +87,8 @@ const sendData = (evt, type, line, controller) => {
                     hook.send({
                         line,
                         'channel': 'client',
-                        'channel_name': controller.client_id
+                        'channel_name': controller.client_id,
+                        'logger_id': controller.logger_id
                     });
                 }
             }

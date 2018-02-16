@@ -25,7 +25,7 @@ function ConsoleHook(config) {
     this.config = config;
     
     this.send = (data) => {    
-        console.log(data.line);
+        console.log(data);
     }
 }
 
