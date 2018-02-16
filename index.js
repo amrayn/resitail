@@ -23,9 +23,8 @@
 
 const fs = require('fs');
 const net = require('net');
-const slackbot = require('slack-node');
 const isEmpty = require('lodash.isempty');
-const merge = require('lodash.merge');
+const includes = require('lodash.includes');
 const tail = require('./lib/tail');
 const residue_crypt = require('./lib/residue_crypt');
 const proc = require('./lib/option_parser');
@@ -44,8 +43,25 @@ if (!config.residue_config) {
     process.exit();
 }
 
-if (!config.channels) {
-    console.error('Invalid configuration. Missing: channels');
+const hooks = [];
+
+config.hooks.forEach((h) => {
+    const hook = require(h.path);
+    try {
+        if (h.enabled) {
+            const hookObj = hook(h.config);
+            hooks.push(hookObj);
+            hookObj.name = h.name;
+            console.log(`Hooked [${h.name}]`);
+        }
+    } catch (e) {
+        console.error(`Error while loading hook ${h.name}: ${e}`);
+        process.exit();
+    }
+});
+
+if (isEmpty(hooks)) {
+    console.error('No hooks enabled');
     process.exit();
 }
 
@@ -53,64 +69,28 @@ const residue_config = JSON.parse(fs.readFileSync(config.residue_config));
 const crypt = residue_crypt(residue_config);
 const packet_delimiter = '\r\n\r\n';
 
-const slack = new slackbot();
-
-slack.setWebhook(config.webhook_url);
-
-const formatText = (data, template) => template.replace('%line', data).
-                                          replace("&", "&amp;").
-                                          replace("<", "&lt;").
-                                          replace(">", "&gt;");
-
-const slackSend = (data, channel) => {
-    let request = {};
-    if (config.special_cases) {
-        for (let i = 0; i < config.special_cases.length; ++i) {
-            const c = config.special_cases[i];
-            if (c.text && data.indexOf(c.text) > -1) {
-                request.attachments = [
-                    {
-                        "color": c.color,
-                        "text": formatText(data, c.template || config.template),
-                        "pretext": c.message ? formatText(data, c.message) : null,
-                        "mrkdwn_in": ["text", "pretext"]
-                    }
-                ];
-                break;
-            }
-        }
-    }
-    if (!request.attachments) {
-        request.text = formatText(data, config.template || '%line');
-    }
-    slack.webhook(merge({
-        channel: channel,
-        username: config.username || 'resitail',
-    }, request), (err, response) => {
-        if (err || response.status === 'fail') {
-            if (typeof response !== "undefined") {
-                console.log(response.response + ' - channel: ' + channel);
-            }
-        }
-    });
-}
-
-const sendData = (evt, type, data, controller) => {
+const sendData = (evt, type, line, controller) => {
     if (controller) {
-        if (config.channels.to_logger) {
-            if (config.loggers_ignore_list && config.loggers_ignore_list.indexOf(controller.logger_id) > -1) {
-                // ignore
-            } else {
-                slackSend(data, controller.logger_id);
+        hooks.forEach((hook) => {
+            if (hook.config.channels.to_logger) {
+                if (!includes(hook.config.loggers_ignore_list, controller.logger_id)) {
+                    hook.send({
+                        line,
+                        'channel': 'logger',
+                        'channel_name': controller.logger_id
+                    });
+                }
             }
-        }
-        if (config.channels.to_client) {
-            if (config.clients_ignore_list && config.clients_ignore_list.indexOf(controller.client_id) > -1) {
-                //ignore
-            } else {
-                slackSend(data, controller.client_id);
+            if (hook.config.channels.to_client) {
+                if (!includes(hook.config.clients_ignore_list, controller.client_id)) {
+                    hook.send({
+                        line,
+                        'channel': 'client',
+                        'channel_name': controller.client_id
+                    });
+                }
             }
-        }
+        });
     }
 }
 
@@ -125,7 +105,7 @@ admin_socket.connect(residue_config.admin_port, '127.0.0.1');
 const active_processes = [];
 
 const startTail = (clientId) => {
-    console.log(`Start [${clientId}]`);
+    console.log(`Start client [${clientId}]`);
     const request = {
         _t: parseInt((new Date()).getTime() / 1000, 10),
         type: 5,
@@ -164,12 +144,12 @@ const processResponse = (response) => {
                 buffer: 0,
             });
 
-            tail_process.on('line', data => {
-                sendData('resitail:line', 'log', data, controller);
+            tail_process.on('line', txt => {
+                sendData('resitail:line', 'log', txt, controller);
             });
 
-            tail_process.on('info', data => {
-                sendData('resitail:line', 'info', data, controller);
+            tail_process.on('info', txt => {
+                sendData('resitail:line', 'info', txt, controller);
             });
 
             tail_process.on('error', error => {

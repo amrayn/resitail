@@ -1,9 +1,9 @@
 {
   "name": "resitail",
-  "version": "1.2.17",
-  "description": "Stream Residue logs to slack",
+  "version": "1.3.0",
+  "description": "Stream your residue server logs using hooks",
   "homepage": "https://github.com/muflihun/resitail",
-  "author": "Muflihun Labs <info@muflihun.com>",
+  "author": "Abu Musa <abumusamq@gmail.com>",
   "license": "Apache-2.0",
   "bin": "./bin/resitail",
   "dependencies": {
@@ -13,6 +13,7 @@
     "commander": "^2.11.0",
     "events": "^1.1.1",
     "fs": "0.0.1-security",
+    "lodash.includes": "^4.3.0",
     "lodash.isempty": "^4.4.0",
     "lodash.merge": "^4.6.0",
     "slack-node": "^0.1.8",
