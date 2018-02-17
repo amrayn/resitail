@@ -25,6 +25,7 @@ const fs = require('fs');
 const net = require('net');
 const isEmpty = require('lodash.isempty');
 const includes = require('lodash.includes');
+const child_process = require('child_process');
 const tail = require('./lib/tail');
 const residue_crypt = require('./lib/residue_crypt');
 const proc = require('./lib/option_parser');
@@ -61,18 +62,32 @@ for (let i = 0; i < residue_config.known_clients.length; ++i) {
     });
 }
 
-config.hooks.forEach((h) => {
-    const hook = require(h.path);
+const activateHook = (hookName, path, config) => {
+    const hook = require(path);
     try {
-        if (h.enabled) {
-            const hookObj = hook(h.config, serverInfo);
-            hooks.push(hookObj);
-            hookObj.name = h.name;
-            console.log(`Hooked [${h.name}]`);
-        }
+        const hookObj = hook(config, serverInfo);
+        hookObj.hookName = hookName;
+        hooks.push(hookObj);
+        console.log(`Hooked [${hookName}] from [${path}]`);
     } catch (e) {
-        console.error(`Error while loading hook ${h.name}: ${e}`);
+        console.error(`Error while loading hook ${hookName}: ${e}`);
         process.exit();
+    }
+}
+
+config.hooks.forEach((h) => {
+    if (!h.enabled) {
+        return;
+    }
+    if (!isEmpty(h.package)) {
+        const version = h.version || 'latest';
+        console.log(`Downloading ${h.package}@${version}`);
+        child_process.execSync(`npm install ${h.package}@${version}`,{stdio:[0,1,2]});
+        activateHook(h.name, h.package, h.config);
+    } else if (!isEmpty(h.path)) {
+        activateHook(h.name, h.path, h.config);
+    } else {
+        console.error(`Invalid hook ${h.name}`)
     }
 });
 
