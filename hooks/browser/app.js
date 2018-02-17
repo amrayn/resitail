@@ -10,9 +10,10 @@
           socket.emit("start-client", {
               id: $(this).attr("name"),
           });
+          $("." + $(this).attr("name") + "-loggers-list").find(".logger").removeProp('disabled');
       } else {
           $(".line[data-client=" + $(this).attr("name") + "]").remove();
-
+          $("." + $(this).attr("name") + "-loggers-list").find(".logger").prop('disabled', true);
           socket.emit("stop-client", {
               id: $(this).attr("name"),
           });
