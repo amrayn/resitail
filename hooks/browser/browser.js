@@ -28,12 +28,33 @@ const fs = require('fs');
 function BrowserHook(config) {
     
     this.config = config;
+    
+    const validFiles = ['/index.html', '/style.css'];
 
     const handler = (req, res) => {
-        fs.readFile(__dirname + '/index.html', (err, data) => {
+        let url = req.url;
+        if (url === '/' || url === '') {
+            url = '/index.html';
+        }
+        for (var i = 0; i < validFiles.length; ++i) {
+            if (url.indexOf(validFiles[i]) > -1) {
+                url = validFiles[i];
+                break;
+            }
+        }
+        const fullFile = __dirname + url;
+        if (!fs.existsSync(fullFile)) {
+            res.writeHead(404);
+            return res.end('File does not exist');
+        }
+        if (validFiles.indexOf(url) === -1) {
+            res.writeHead(401);
+            return res.end('Access Denied');
+        }
+        fs.readFile(fullFile, (err, data) => {
             if (err) {
                 res.writeHead(500);
-                return res.end('Error loading index.html - correct permissions?');
+                return res.end(`Error loading ${req.url} - correct permissions?`);
             }
 
             res.writeHead(200);
