@@ -76,7 +76,7 @@ function BrowserHook(config) {
         socket.on('disconnect', function() {
             for (var i = 0; i < clients.length; ++i) {
                 if (clients[i] === socket.id) {
-                    delete clients[i];
+                    clients.splice(i, 1);
                     break;
                 }
             }
@@ -87,8 +87,6 @@ function BrowserHook(config) {
         for (var i = 0; i < clients.length; ++i) {
             if (clients[i]) {
                 io.sockets.connected[clients[i]].emit("data", data);
-            } else {
-                clients.splice(i, 1);
             }
         }
     }
