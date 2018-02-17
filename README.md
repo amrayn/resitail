@@ -5,7 +5,7 @@
 # Overview
 Resitail is a tool that streams your [residue](https://github.com/muflihun/residue) logs using hooks. 
 
-Samples directory contain fully functional [slack](https://slack.com/) webhook.
+Please [search for resitail-hook on NPM](https://www.npmjs.com/browse/keyword/resitail-hook) for available hooks
 
 [![Version](https://img.shields.io/npm/v/resitail.svg)](https://www.npmjs.com/package/resitail)
 [![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
