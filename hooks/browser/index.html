@@ -34,19 +34,19 @@
   
   $(document).on("click", "#side-bar>.clients input.client", function() {
       var selector = (".line[data-client=" + $(this).attr("name") + "]");
-      if ($(this).is(":checked") && !$(selector).hasClass("hidden-client")) {
-          $(selector).addClass("hidden-client");
-      } else if (!$(this).is(":checked")) {
+      if ($(this).is(":checked") && $(selector).hasClass("hidden-client")) {
           $(selector).removeClass("hidden-client");
+      } else if (!$(this).is(":checked")) {
+          $(selector).addClass("hidden-client");
       }
   });
   
   $(document).on("click", "#side-bar>.loggers input.logger", function() {
       var selector = (".line[data-logger=" + $(this).attr("name") + "]");
-      if ($(this).is(":checked") && !$(selector).hasClass("hidden-logger")) {
-          $(selector).addClass("hidden-logger");
-      } else if (!$(this).is(":checked")) {
+      if ($(this).is(":checked") && $(selector).hasClass("hidden-logger")) {
           $(selector).removeClass("hidden-logger");
+      } else if (!$(this).is(":checked")) {
+          $(selector).addClass("hidden-logger");
       }
   });
 
