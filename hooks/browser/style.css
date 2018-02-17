@@ -20,6 +20,14 @@
     margin-bottom: 0;
 }
 
+.line.evt-info {
+    color: #00f;
+}
+
+.line.evt-error {
+    color: #f00;
+}
+
 #side-bar {
     position: fixed;
     display: inline-block;

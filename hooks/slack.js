@@ -27,33 +27,31 @@ function SlackHook(config) {
     this.config = config;
 
     if (!this.config.channels) {
-      throw ('Invalid configuration. Missing: channels');
+        throw ('Invalid configuration. Missing: channels');
     }
 
     this.slack = new slackbot();
     this.slack.setWebhook(this.config.webhook_url);
-  
+
 
     this.formatText = (data, template) => template.replace('%line', data).
-                                                   replace("&", "&amp;").
-                                                   replace("<", "&lt;").
-                                                   replace(">", "&gt;");
+    replace("&", "&amp;").
+    replace("<", "&lt;").
+    replace(">", "&gt;");
 
     this.send = (data) => {
         let request = {};
-    
+
         if (this.config.special_cases) {
             for (let i = 0; i < this.config.special_cases.length; ++i) {
                 const c = this.config.special_cases[i];
                 if (c.text && data.line.indexOf(c.text) > -1) {
-                    request.attachments = [
-                        {
-                            "color": c.color,
-                            "text": this.formatText(data.line, c.template || this.config.template),
-                            "pretext": c.message ? this.formatText(data.line, c.message) : null,
-                            "mrkdwn_in": ["text", "pretext"]
-                        }
-                    ];
+                    request.attachments = [{
+                        "color": c.color,
+                        "text": this.formatText(data.line, c.template || this.config.template),
+                        "pretext": c.message ? this.formatText(data.line, c.message) : null,
+                        "mrkdwn_in": ["text", "pretext"]
+                    }];
                     break;
                 }
             }
@@ -75,4 +73,3 @@ function SlackHook(config) {
 }
 
 module.exports = (config) => new SlackHook(config);
-

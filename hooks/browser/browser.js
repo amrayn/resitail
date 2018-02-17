@@ -26,9 +26,9 @@
 const fs = require('fs');
 
 function BrowserHook(config) {
-    
+
     this.config = config;
-    
+
     const validFiles = ['/index.html', '/style.css', '/favicon.ico'];
 
     const handler = (req, res) => {
@@ -61,7 +61,7 @@ function BrowserHook(config) {
             res.end(data);
         });
     }
-    
+
     let app = require('http').createServer(handler)
     let io = require('socket.io').listen(app)
     app.listen(config.port);
@@ -82,7 +82,7 @@ function BrowserHook(config) {
             }
         });
     });
-    
+
     this.send = (data) => {
         for (var i = 0; i < clients.length; ++i) {
             if (clients[i]) {

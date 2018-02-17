@@ -23,8 +23,8 @@
 
 function ConsoleHook(config) {
     this.config = config;
-    
-    this.send = (data) => {    
+
+    this.send = (data) => {
         console.log(data);
     }
 }

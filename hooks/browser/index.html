@@ -56,7 +56,7 @@
       
       const newLine = $("<div>", {
           "text": data.line,
-          "class": "line " + ($("#chk-logger-" + loggerId).is(":checked") ? "" : "hidden-logger") + ($("#chk-client-" + clientId).is(":checked") ? "" : "hidden-client"),
+          "class": "line " + 'evt-' + data.event_type + ' ' + ($("#chk-logger-" + loggerId).is(":checked") ? "" : "hidden-logger") + ($("#chk-client-" + clientId).is(":checked") ? "" : "hidden-client"),
           "data-logger": loggerId,
           "data-client": clientId,
       });
