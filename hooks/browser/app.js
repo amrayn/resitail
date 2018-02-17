@@ -48,24 +48,6 @@
           newLine[0].scrollIntoView(false);
       }
       
-      if ($("#side-bar").find(".logger[id=chk-logger-" + loggerId + "]").length == 0) {
-          $("#side-bar>.loggers").append($("<input>", {
-              "type": "checkbox",
-              "checked": true,
-              "text": loggerId,
-              "class": "logger",
-              "id": "chk-logger-" + loggerId,
-              "name": loggerId,
-          }));
-
-          $("#side-bar>.loggers").append($("<label>", {
-              "for": "chk-logger-" + loggerId,
-              "text": loggerId,
-              "class": "logger-label",
-          }));
-          $("#side-bar>.loggers").append("<br/>");
-      }
-      
       if ($("#side-bar").find(".client[id=chk-client-" + clientId + "]").length == 0) {
           $("#side-bar>.clients").append($("<input>", {
               "type": "checkbox",
@@ -80,6 +62,25 @@
               "text": clientId,
               "class": "client-label",
           }));
+          $("#side-bar>.clients").append("<div class='" + clientId + "-loggers-list loggers-list'></div>");
           $("#side-bar>.clients").append("<br/>");
+      }
+      
+      if ($("." + clientId + "-loggers-list").find(".logger[id=chk-logger-" + loggerId + "]").length == 0) {
+          $("." + clientId + "-loggers-list").append($("<input>", {
+              "type": "checkbox",
+              "checked": true,
+              "text": loggerId,
+              "class": "logger",
+              "id": "chk-logger-" + loggerId,
+              "name": loggerId,
+          }));
+
+          $("." + clientId + "-loggers-list").append($("<label>", {
+              "for": "chk-logger-" + loggerId,
+              "text": loggerId,
+              "class": "logger-label",
+          }));
+          $("." + clientId + "-loggers-list").append("<br/>");
       }
   });

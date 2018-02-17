@@ -28,6 +28,14 @@
     color: #f00;
 }
 
+.loggers-list {
+    margin-left: 12px;
+}
+
+h5 {
+    margin-bottom: 10px;
+}
+
 #side-bar {
     position: fixed;
     display: inline-block;
