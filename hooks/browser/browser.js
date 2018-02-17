@@ -70,12 +70,62 @@ function BrowserHook(config) {
 
     io.sockets.on('connection', (socket) => {
         socket.on('client-ready', function() {
-            clients.push(socket.id);
+            clients.push({
+                socket: socket.id,
+                ignore_clients_list: [],
+                ignore_loggers_list: [],
+            });
+        });
+
+        socket.on('stop-client', function(data) {
+            for (var i = 0; i < clients.length; ++i) {
+                if (clients[i].socket === socket.id) {
+                    if (clients[i].ignore_clients_list.indexOf(data.id) === -1) {
+                        clients[i].ignore_clients_list.push(data.id);
+                    }
+                    break;
+                }
+            }
+        });
+
+        socket.on('stop-logger', function(data) {
+            for (var i = 0; i < clients.length; ++i) {
+                if (clients[i].socket === socket.id) {
+                    if (clients[i].ignore_loggers_list.indexOf(data.id) === -1) {
+                        clients[i].ignore_loggers_list.push(data.id);
+                    }
+                    break;
+                }
+            }
+        });
+
+        socket.on('start-client', function(data) {
+            for (var i = 0; i < clients.length; ++i) {
+                if (clients[i].socket === socket.id) {
+                    const idx = clients[i].ignore_clients_list.indexOf(data.id);
+                    if (idx !== -1) {
+                        clients[i].ignore_clients_list.splice(idx, 1);
+                    }
+                    break;
+                }
+            }
+        });
+
+        socket.on('start-logger', function(data) {
+            for (var i = 0; i < clients.length; ++i) {
+                if (clients[i].socket === socket.id) {
+                    const idx = clients[i].ignore_loggers_list.indexOf(data.id);
+                    if (idx !== -1) {
+                        clients[i].ignore_loggers_list.splice(idx, 1);
+                    }
+                    break;
+                }
+            }
         });
 
         socket.on('disconnect', function() {
             for (var i = 0; i < clients.length; ++i) {
-                if (clients[i] === socket.id) {
+                if (clients[i].socket === socket.id) {
                     clients.splice(i, 1);
                     break;
                 }
@@ -84,9 +134,13 @@ function BrowserHook(config) {
     });
 
     this.send = (data) => {
+        const loggerId = data.logger_id || data.channel_name;
+        const clientId = data.client_id || data.channel_name;
+
         for (var i = 0; i < clients.length; ++i) {
-            if (clients[i]) {
-                io.sockets.connected[clients[i]].emit("data", data);
+            if (clients[i].ignore_loggers_list.indexOf(loggerId) === -1 &&
+                clients[i].ignore_clients_list.indexOf(clientId) === -1) {
+                io.sockets.connected[clients[i].socket].emit("data", data);
             }
         }
     }

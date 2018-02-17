@@ -6,20 +6,29 @@
   });
   
   $(document).on("click", "#side-bar>.clients input.client", function() {
-      var selector = (".line[data-client=" + $(this).attr("name") + "]");
-      if ($(this).is(":checked") && $(selector).hasClass("hidden-client")) {
-          $(selector).removeClass("hidden-client");
-      } else if (!$(this).is(":checked")) {
-          $(selector).addClass("hidden-client");
+      if ($(this).is(":checked")) {
+          socket.emit("start-client", {
+              id: $(this).attr("name"),
+          });
+      } else {
+          $(".line[data-client=" + $(this).attr("name") + "]").remove();
+
+          socket.emit("stop-client", {
+              id: $(this).attr("name"),
+          });
       }
   });
   
   $(document).on("click", "#side-bar>.loggers input.logger", function() {
-      var selector = (".line[data-logger=" + $(this).attr("name") + "]");
-      if ($(this).is(":checked") && $(selector).hasClass("hidden-logger")) {
-          $(selector).removeClass("hidden-logger");
-      } else if (!$(this).is(":checked")) {
-          $(selector).addClass("hidden-logger");
+      if ($(this).is(":checked")) {
+          socket.emit("start-logger", {
+              id: $(this).attr("name"),
+          });
+      } else {
+          $(".line[data-logger=" + $(this).attr("name") + "]").remove();
+          socket.emit("stop-logger", {
+              id: $(this).attr("name"),
+          });
       }
   });
 

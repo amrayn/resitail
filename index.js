@@ -141,7 +141,7 @@ const processResponse = (response) => {
             const files = [];
 
             for (let j = 0; j < list.length; ++j) {
-                if (fs.existsSync(list[j])) {
+                if (fs.existsSync(list[j]) && files.indexOf(list[j]) === -1) {
                     files.push(list[j]);
                 }
             }
