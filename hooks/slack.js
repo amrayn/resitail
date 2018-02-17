@@ -1,5 +1,7 @@
 //
 //  slack.js
+//  A resitail hook that streams logs to the slack
+//
 //  Resitail
 //
 //  Copyright 2017-present Muflihun Labs

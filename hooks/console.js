@@ -1,5 +1,7 @@
 //
-//  console.js - a sample hook
+//  console.js
+//  A simple hook for demonstration
+//
 //  Resitail
 //
 //  Copyright 2017-present Muflihun Labs
