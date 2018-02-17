@@ -75,6 +75,8 @@ const sendData = (evt, type, line, controller) => {
             if (hook.config.channels.to_logger) {
                 if (!includes(hook.config.loggers_ignore_list, controller.logger_id)) {
                     hook.send({
+                        'event': evt,
+                        'event_type': type,
                         line,
                         'channel': 'logger',
                         'channel_name': controller.logger_id,
@@ -85,6 +87,8 @@ const sendData = (evt, type, line, controller) => {
             if (hook.config.channels.to_client) {
                 if (!includes(hook.config.clients_ignore_list, controller.client_id)) {
                     hook.send({
+                        'event': evt,
+                        'event_type': type,
                         line,
                         'channel': 'client',
                         'channel_name': controller.client_id,
