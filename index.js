@@ -62,8 +62,8 @@ for (let i = 0; i < residue_config.known_clients.length; ++i) {
     });
 }
 
-const activateHook = (hookName, path, config) => {
-    const hook = require(path);
+const activateHook = (hookName, path, version, config) => {
+    const hook = require(`${path}@${version}`);
     try {
         const hookObj = hook(config, serverInfo);
         hookObj.hookName = hookName;
@@ -83,9 +83,9 @@ config.hooks.forEach((h) => {
         const version = h.version || 'latest';
         console.log(`Downloading ${h.package}@${version}`);
         child_process.execSync(`npm install -g ${h.package}@${version}`,{stdio:[0,1,2]});
-        activateHook(h.name, h.package, h.config);
+        activateHook(h.name, h.package, version, h.config);
     } else if (!isEmpty(h.path)) {
-        activateHook(h.name, h.path, h.config);
+        activateHook(h.name, h.path, 'latest', h.config);
     } else {
         console.error(`Invalid hook ${h.name}`)
     }
