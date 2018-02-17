@@ -29,7 +29,7 @@ function BrowserHook(config) {
 
     this.config = config;
 
-    const validFiles = ['/index.html', '/style.css', '/favicon.ico'];
+    const validFiles = ['/index.html', '/style.css', '/app.js', '/favicon.ico'];
 
     const handler = (req, res) => {
         let url = req.url;
