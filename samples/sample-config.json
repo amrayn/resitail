@@ -2,25 +2,6 @@
     "residue_config" : "<residue-config>",
     "hooks": [
         {
-            "name": "slack",
-            "path": "./hooks/slack",
-            "enabled": false,
-            "config": {
-                "webhook_url" : "<obtain from https://my.slack.com/services/new/incoming-webhook>",
-                "channels" : {
-                    "to_client" : true,
-                    "to_logger" : true
-                },
-                "clients_ignore_list" : [],
-                "loggers_ignore_list" : [],
-                "template": "%line",
-                "special_cases" : [
-                    { "text" : "[ERROR]", "color" : "#ff0000", "message" : "*ERROR*:interrobang:" },
-                    { "text" : "[INFO]", "color" : "#00ff00", "template" : "*INFO>* `%line`" }
-                ]
-            }
-        },
-        {
             "name": "console",
             "path": "./hooks/console",
             "enabled": false,
@@ -33,7 +14,8 @@
         },
         {
             "name": "browser",
-            "path": "./hooks/browser/browser",
+            "package": "resitail-browser",
+            "version": "latest",
             "enabled": true,
             "config": {
                 "port": 3000,
