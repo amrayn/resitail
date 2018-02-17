@@ -43,13 +43,29 @@ if (!config.residue_config) {
     process.exit();
 }
 
+const residue_config = JSON.parse(fs.readFileSync(config.residue_config));
+const crypt = residue_crypt(residue_config);
+const packet_delimiter = '\r\n\r\n';
+
+
 const hooks = [];
+
+const serverInfo = {
+    clients: [],
+};
+
+for (let i = 0; i < residue_config.known_clients.length; ++i) {
+    serverInfo.clients.push({
+        client_id: residue_config.known_clients[i].client_id,
+        loggers: residue_config.known_clients[i].loggers,
+    });
+}
 
 config.hooks.forEach((h) => {
     const hook = require(h.path);
     try {
         if (h.enabled) {
-            const hookObj = hook(h.config);
+            const hookObj = hook(h.config, serverInfo);
             hooks.push(hookObj);
             hookObj.name = h.name;
             console.log(`Hooked [${h.name}]`);
@@ -64,10 +80,6 @@ if (isEmpty(hooks)) {
     console.error('No hooks enabled');
     process.exit();
 }
-
-const residue_config = JSON.parse(fs.readFileSync(config.residue_config));
-const crypt = residue_crypt(residue_config);
-const packet_delimiter = '\r\n\r\n';
 
 const sendData = (evt, type, line, controller) => {
     if (controller) {

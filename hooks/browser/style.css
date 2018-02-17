@@ -48,6 +48,11 @@ h5 {
     overflow: scroll;
 }
 
+.client-label,
+.logger-label {
+    font-family: monospace;
+}
+
 @media only screen and (max-width: 500px) {
     #side-bar {
         position: relative;

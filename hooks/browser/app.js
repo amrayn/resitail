@@ -19,7 +19,7 @@
       }
   });
   
-  $(document).on("click", "#side-bar>.loggers input.logger", function() {
+  $(document).on("click", "#side-bar>.clients .loggers-list input.logger", function() {
       if ($(this).is(":checked")) {
           socket.emit("start-logger", {
               id: $(this).attr("name"),
@@ -32,6 +32,48 @@
       }
   });
 
+  socket.on("server-info", function(serverInfo){
+      serverInfo.clients.forEach((client) => {
+          const clientId = client.client_id;
+          if ($("#side-bar").find(".client[id=chk-client-" + clientId + "]").length == 0) {
+              $("#side-bar>.clients").append($("<input>", {
+                  "type": "checkbox",
+                  "checked": true,
+                  "text": clientId,
+                  "class": "client",
+                  "id": "chk-client-" + clientId,
+                  "name": clientId,
+              }));
+              $("#side-bar>.clients").append($("<label>", {
+                  "for": "chk-client-" + clientId,
+                  "text": clientId,
+                  "class": "client-label",
+              }));
+              $("#side-bar>.clients").append("<div class='" + clientId + "-loggers-list loggers-list'></div>");
+              $("#side-bar>.clients").append("<br/>");
+          }
+          client.loggers.forEach((loggerId) => {
+              if ($("." + clientId + "-loggers-list").find(".logger[id=chk-logger-" + loggerId + "]").length == 0) {
+                  $("." + clientId + "-loggers-list").append($("<input>", {
+                      "type": "checkbox",
+                      "checked": true,
+                      "text": loggerId,
+                      "class": "logger",
+                      "id": "chk-logger-" + loggerId,
+                      "name": loggerId,
+                  }));
+
+                  $("." + clientId + "-loggers-list").append($("<label>", {
+                      "for": "chk-logger-" + loggerId,
+                      "text": loggerId,
+                      "class": "logger-label",
+                  }));
+                  $("." + clientId + "-loggers-list").append("<br/>");
+              }
+          });
+      });
+  });
+  
   socket.on("data", function(data){
       const loggerId = data.logger_id || data.channel_name;
       const clientId = data.client_id || data.channel_name;
@@ -46,41 +88,5 @@
       
       if ($("#follow").is(":checked")) {
           newLine[0].scrollIntoView(false);
-      }
-      
-      if ($("#side-bar").find(".client[id=chk-client-" + clientId + "]").length == 0) {
-          $("#side-bar>.clients").append($("<input>", {
-              "type": "checkbox",
-              "checked": true,
-              "text": clientId,
-              "class": "client",
-              "id": "chk-client-" + clientId,
-              "name": clientId,
-          }));
-          $("#side-bar>.clients").append($("<label>", {
-              "for": "chk-client-" + clientId,
-              "text": clientId,
-              "class": "client-label",
-          }));
-          $("#side-bar>.clients").append("<div class='" + clientId + "-loggers-list loggers-list'></div>");
-          $("#side-bar>.clients").append("<br/>");
-      }
-      
-      if ($("." + clientId + "-loggers-list").find(".logger[id=chk-logger-" + loggerId + "]").length == 0) {
-          $("." + clientId + "-loggers-list").append($("<input>", {
-              "type": "checkbox",
-              "checked": true,
-              "text": loggerId,
-              "class": "logger",
-              "id": "chk-logger-" + loggerId,
-              "name": loggerId,
-          }));
-
-          $("." + clientId + "-loggers-list").append($("<label>", {
-              "for": "chk-logger-" + loggerId,
-              "text": loggerId,
-              "class": "logger-label",
-          }));
-          $("." + clientId + "-loggers-list").append("<br/>");
       }
   });

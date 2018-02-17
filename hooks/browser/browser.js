@@ -25,9 +25,10 @@
 
 const fs = require('fs');
 
-function BrowserHook(config) {
+function BrowserHook(config, serverInfo) {
 
     this.config = config;
+    this.serverInfo = serverInfo;
 
     const validFiles = ['/index.html', '/style.css', '/app.js', '/favicon.ico'];
 
@@ -67,6 +68,8 @@ function BrowserHook(config) {
     app.listen(config.port);
 
     const clients = [];
+    
+    const thisRef = this;
 
     io.sockets.on('connection', (socket) => {
         socket.on('client-ready', function() {
@@ -75,6 +78,7 @@ function BrowserHook(config) {
                 ignore_clients_list: [],
                 ignore_loggers_list: [],
             });
+            socket.emit("server-info", thisRef.serverInfo);
         });
 
         socket.on('stop-client', function(data) {
@@ -147,4 +151,4 @@ function BrowserHook(config) {
 
 }
 
-module.exports = (config) => new BrowserHook(config);
+module.exports = (config, serverInfo) => new BrowserHook(config, serverInfo);
