@@ -82,7 +82,7 @@ config.hooks.forEach((h) => {
     if (!isEmpty(h.package)) {
         const version = h.version || 'latest';
         console.log(`Downloading ${h.package}@${version}`);
-        child_process.execSync(`npm install ${h.package}@${version}`,{stdio:[0,1,2]});
+        child_process.execSync(`npm install -g ${h.package}@${version}`,{stdio:[0,1,2]});
         activateHook(h.name, h.package, h.config);
     } else if (!isEmpty(h.path)) {
         activateHook(h.name, h.path, h.config);
