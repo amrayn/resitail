@@ -1,5 +1,5 @@
 
-  var socket = io.connect('http://localhost:3000');
+  var socket = io.connect('/');
 
   $(document).ready(function() {
       socket.emit("client-ready");
