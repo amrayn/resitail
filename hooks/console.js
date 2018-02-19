@@ -23,13 +23,13 @@
 
 "use strict";
 
-function ConsoleHook(config, serverInfo) {
-    this.config = config;
-    this.serverInfo = serverInfo;
+function ConsoleHook(options) {
+    this.config = options.config;
+    this.serverInfo = options.serverInfo;
 
     this.send = (data) => {
         console.log(data);
     }
 }
 
-module.exports = (config, serverInfo) => new ConsoleHook(config, serverInfo);
+module.exports = (options) => new ConsoleHook(options);
