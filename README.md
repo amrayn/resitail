@@ -31,7 +31,7 @@ A configuration file looks like:
 ## Creating Hook
 Hook is essentially a JS module with following minimal requirements
 
- * A class with constructor: `config` and `serverInfo`
+ * A class with options constructor
  * A send function with `data` parameter.
  * Export this class
  
@@ -42,16 +42,15 @@ Example:
 ```javascript
 "use strict";
 
-function sampleHook (config, serverInfo) {
-    this.config = config;
-    this.serverInfo = serverInfo;
+function sampleHook (options) {
+    this.options = options;
 }
 
 sampleHook.prototype.send = (data) => {
     console.log(data);
 }
 
-module.exports = (config, serverInfo) => new sampleHook(config, serverInfo);
+module.exports = (options) => new sampleHook(options);
 ```
 
 Data contains following properties:

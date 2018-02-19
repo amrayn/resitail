@@ -65,7 +65,7 @@ for (let i = 0; i < residue_config.known_clients.length; ++i) {
 const activateHook = (hookName, path, config) => {
     const hook = require(path);
     try {
-        const hookObj = hook(config, serverInfo);
+        const hookObj = hook({config, serverInfo});
         hookObj.hookName = hookName;
         hooks.push(hookObj);
         console.log(`Hooked [${hookName}] from [${path}]`);
