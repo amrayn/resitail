@@ -55,6 +55,9 @@ const serverInfo = {
     clients: [],
 };
 
+const recent_to_clients = [];
+const recent_to_loggers = [];
+
 for (let i = 0; i < residue_config.known_clients.length; ++i) {
     serverInfo.clients.push({
         client_id: residue_config.known_clients[i].client_id,
@@ -65,7 +68,10 @@ for (let i = 0; i < residue_config.known_clients.length; ++i) {
 const activateHook = (hookName, path, config) => {
     const hook = require(path);
     try {
-        const hookObj = hook({config, serverInfo});
+        const hookObj = hook({
+            config,
+            serverInfo,
+        });
         hookObj.hookName = hookName;
         hooks.push(hookObj);
         console.log(`Hooked [${hookName}] from [${path}]`);
@@ -96,33 +102,60 @@ if (isEmpty(hooks)) {
     process.exit();
 }
 
+const sendToHook = (hook, logger_data, client_data) => {
+    if (hook.config.channels.to_logger) {
+        if (!includes(hook.config.loggers_ignore_list, logger_data.channel_name)) {
+            hook.send(logger_data);
+        }
+    }
+    if (hook.config.channels.to_client) {
+        if (!includes(hook.config.clients_ignore_list, client_data.channel_name)) {
+            hook.send(client_data);
+        }
+    }
+}
+
 const sendData = (evt, type, line, controller) => {
     if (controller) {
+        const logger_data = {
+            'event': evt,
+            'event_type': type,
+            line,
+            'channel': 'logger',
+            'channel_name': controller.logger_id,
+            'client_id': controller.client_id
+        };
+        const client_data = {
+            'event': evt,
+            'event_type': type,
+            line,
+            'channel': 'client',
+            'channel_name': controller.client_id,
+            'logger_id': controller.logger_id
+        };
+        if (recent_to_loggers.length > 19) {
+            recent_to_loggers.splice(0, recent_to_loggers.length - 19);
+        }
+
+        if (recent_to_clients.length > 19) {
+            recent_to_clients.splice(0, recent_to_clients.length - 19);
+        }
+
+        recent_to_loggers.push(logger_data);
+        recent_to_clients.push(client_data);
+
         hooks.forEach((hook) => {
-            if (hook.config.channels.to_logger) {
-                if (!includes(hook.config.loggers_ignore_list, controller.logger_id)) {
-                    hook.send({
-                        'event': evt,
-                        'event_type': type,
-                        line,
-                        'channel': 'logger',
-                        'channel_name': controller.logger_id,
-                        'client_id': controller.client_id
-                    });
+            if (typeof hook.set_recent === 'function') {
+                const recent = {};
+                if (hook.config.channels.to_logger) {
+                    recent.loggers = recent_to_loggers;
                 }
-            }
-            if (hook.config.channels.to_client) {
-                if (!includes(hook.config.clients_ignore_list, controller.client_id)) {
-                    hook.send({
-                        'event': evt,
-                        'event_type': type,
-                        line,
-                        'channel': 'client',
-                        'channel_name': controller.client_id,
-                        'logger_id': controller.logger_id
-                    });
+                if (hook.config.channels.to_client) {
+                    recent.clients = recent_to_clients;
                 }
+                hook.set_recent(recent);
             }
+            sendToHook(hook, logger_data, client_data);
         });
     }
 }
