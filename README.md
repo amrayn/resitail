@@ -2,12 +2,13 @@
   ﷽
 </p>
 
-# Overview
-Resitail is a tool that streams your [residue](https://github.com/muflihun/residue) logs using hooks. 
+# Resitail
 
 [![Version](https://img.shields.io/npm/v/resitail.svg)](https://www.npmjs.com/package/resitail)
 [![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
+
+Resitail is a middleware to stream [residue](https://github.com/muflihun/residue) server logs via various hooks
 
 ## Quick start
 
