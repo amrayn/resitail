@@ -58,10 +58,10 @@ const serverInfo = {
 const recent_to_clients = [];
 const recent_to_loggers = [];
 
-for (let i = 0; i < residue_config.known_clients.length; ++i) {
+for (let i = 0; i < residue_config.managed_clients.length; ++i) {
     serverInfo.clients.push({
-        client_id: residue_config.known_clients[i].client_id,
-        loggers: residue_config.known_clients[i].loggers,
+        client_id: residue_config.managed_clients[i].client_id,
+        loggers: residue_config.managed_clients[i].loggers,
     });
 }
 
@@ -160,8 +160,8 @@ const sendData = (evt, type, line, controller) => {
     }
 }
 
-if (isEmpty(residue_config.known_clients)) {
-    console.error('ERR: No known clients specified in residue config');
+if (isEmpty(residue_config.managed_clients)) {
+    console.error('ERR: No managed clients specified in residue config');
     process.exit();
 }
 
@@ -242,6 +242,6 @@ admin_socket.on('data', (data, cb) => {
 });
 
 // start all the tails
-for (let i = 0; i < residue_config.known_clients.length; ++i) {
-    startTail(residue_config.known_clients[i].client_id);
+for (let i = 0; i < residue_config.managed_clients.length; ++i) {
+    startTail(residue_config.managed_clients[i].client_id);
 }
