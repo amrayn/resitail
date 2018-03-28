@@ -45,10 +45,10 @@ Example:
 
 function sampleHook (options) {
     this.options = options;
-}
-
-sampleHook.prototype.send = (data) => {
-    console.log(data);
+    
+    this.send = (data) => {
+        console.log(data);
+    }
 }
 
 module.exports = (options) => new sampleHook(options);
@@ -86,12 +86,12 @@ Once hook is ready you can connect it by adding it to configuration.
 
 A fully working hook configuration looks like:
 
-From registry:
+From registry (notice `package` and `version`):
 
 ```
 {
-    "name": "browser",
-    "package": "resitail-browser",
+    "name": "resitail-f",
+    "package": "resitail-f",
     "version": "latest"
     "enabled": true,
     "config": {
@@ -106,12 +106,12 @@ From registry:
 
 This will install the package globally.
 
-Local:
+Local (notice `path`):
 
 ```
 {
-    "name": "browser",
-    "path": "../resitail-browser",
+    "name": "resitail-f",
+    "path": "../resitail-f",
     "enabled": true,
     "config": {
         "channels" : {
@@ -125,7 +125,7 @@ Local:
 
 ## Notes
  * Please [search for resitail-hook on NPM](https://www.npmjs.com/browse/keyword/resitail-hook) for available hooks
- * Please [check out sample hook](https://github.com/muflihun/resitail-browser) to get started
+ * Please [check out sample hook](https://github.com/muflihun/resitail-f) to get started
 
 ## License
 ```

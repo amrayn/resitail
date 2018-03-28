@@ -1,24 +1,22 @@
 {
-    "residue_config" : "<residue-config>",
+    "residue_config" : "$RESIDUE_HOME/samples/residue.conf.json",
+    "logging": {
+        "logger_id": "resitail",
+        "client_id": "muflihun00102031",
+        "client_private_key": "$RESIDUE_HOME/samples/keys/epri.pem",
+        "client_public_key": "$RESIDUE_HOME/samples/keys/epub.pem",
+        "client_key_secret": "3835383366466972"
+    },
     "hooks": [
         {
-            "name": "console",
-            "path": "./hooks/console",
-            "enabled": false,
-            "config": {
-                "channels" : {
-                    "to_client" : true,
-                    "to_logger" : true
-                }
-            }
-        },
-        {
-            "name": "browser",
-            "package": "resitail-browser",
+            "name": "resitail-f",
+            "package": "resitail-f",
             "version": "latest",
             "enabled": true,
             "config": {
-                "port": 3000,
+                "port": 3101,
+                "key": "C79345693B6E96BC91D392DE912813C1D5E92B5E4144BF98F3D4380D222B2DAB",
+                "strict": false,
                 "channels" : {
                     "to_client" : true,
                     "to_logger" : false

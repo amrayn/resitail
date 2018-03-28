@@ -24,11 +24,14 @@
 const fs = require('fs');
 const net = require('net');
 const isEmpty = require('lodash.isempty');
+const merge = require('lodash.merge');
 const includes = require('lodash.includes');
 const child_process = require('child_process');
+const residue = require('residue');
 const tail = require('./lib/tail');
 const residue_crypt = require('./lib/residue_crypt');
 const proc = require('./lib/option_parser');
+
 
 proc.parse(process.argv);
 
@@ -39,6 +42,19 @@ if (proc.config === false) {
 
 const config = JSON.parse(fs.readFileSync(proc.config));
 
+config.residue_config = config.residue_config.replace("$RESIDUE_HOME", process.env.RESIDUE_HOME);
+if (config.logging) {
+    if (config.logging.client_private_key) {
+        config.logging.client_private_key = config.logging.client_private_key.replace("$RESIDUE_HOME", process.env.RESIDUE_HOME);
+    }
+    if (config.logging.client_public_key) {
+        config.logging.client_public_key = config.logging.client_public_key.replace("$RESIDUE_HOME", process.env.RESIDUE_HOME);
+    }
+}
+
+global.residue = residue;
+global.logger = residue.getLogger(config.logging ? (config.logging.logger_id || 'default') : 'default');
+
 if (!config.residue_config) {
     console.error('Invalid configuration. Missing: residue_config');
     process.exit();
@@ -48,6 +64,18 @@ const residue_config = JSON.parse(fs.readFileSync(config.residue_config));
 const crypt = residue_crypt(residue_config);
 const packet_delimiter = '\r\n\r\n';
 
+let server_rsa_public_key = residue_config.server_rsa_public_key;
+if (server_rsa_public_key && process.env.RESIDUE_HOME) {
+    server_rsa_public_key = server_rsa_public_key.replace('$RESIDUE_HOME', process.env.RESIDUE_HOME);
+}
+
+const resitail_log_config = merge({
+    url: `127.0.0.1:${residue_config.connect_port}`,
+    application_id: 'resitail',
+    server_public_key: server_rsa_public_key,
+}, config.logging || {});
+
+residue.connect(resitail_log_config);
 
 const hooks = [];
 
@@ -71,12 +99,13 @@ const activateHook = (hookName, path, config) => {
         const hookObj = hook({
             config,
             serverInfo,
+            logger,
         });
         hookObj.hookName = hookName;
         hooks.push(hookObj);
-        console.log(`Hooked [${hookName}] from [${path}]`);
+        logger.info(`Hooked [${hookName}] from [${path}]`);
     } catch (e) {
-        console.error(`Error while loading hook ${hookName}: ${e}`);
+        logger.error(`Error while loading hook ${hookName}: ${e}`);
         process.exit();
     }
 }
@@ -87,7 +116,7 @@ config.hooks.forEach((h) => {
     }
     if (!isEmpty(h.package)) {
         const version = h.version || 'latest';
-        console.log(`Downloading ${h.package}@${version}`);
+        console.info(`Downloading ${h.package}@${version}`);
         child_process.execSync(`npm install -g ${h.package}@${version}`,{stdio:[0,1,2]});
         activateHook(h.name, h.package, h.config);
     } else if (!isEmpty(h.path)) {
@@ -171,7 +200,7 @@ admin_socket.connect(residue_config.admin_port, '127.0.0.1');
 const active_processes = [];
 
 const startTail = (clientId) => {
-    console.log(`Start client [${clientId}]`);
+    console.info(`Start client [${clientId}]`);
     const request = {
         _t: parseInt((new Date()).getTime() / 1000, 10),
         type: 5,
@@ -230,7 +259,7 @@ const processResponse = (response) => {
         }
     } catch (err) {
         sendData('resitail:err', 'err', `error occurred, details: ${decrypted}`);
-        console.log(err);
+        logger.error(err);
     }
 }
 
