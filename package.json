@@ -1,11 +1,11 @@
 {
   "name": "resitail",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Stream your residue server logs using hooks",
   "homepage": "https://github.com/muflihun/resitail",
   "author": "Muflihun Labs <info@muflihun.com>",
   "license": "Apache-2.0",
-  "bin": "./bin/resitail",
+  "bin": "node --harmony index.js",
   "dependencies": {
     "CBuffer": "^2.0.0",
     "byline": "^5.0.0",
@@ -16,11 +16,10 @@
     "lodash.includes": "^4.3.0",
     "lodash.isempty": "^4.4.0",
     "lodash.merge": "^4.6.1",
-    "residue": "^2.1.0",
+    "residue": "^2.3.11",
     "util": "^0.10.3"
   },
   "scripts": {
-    "start": "node --harmony index.js"
   },
   "repository": {
     "type": "git",
