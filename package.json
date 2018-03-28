@@ -18,7 +18,7 @@
     "util": "^0.10.3"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node --harmony index.js"
   },
   "repository": {
     "type": "git",
