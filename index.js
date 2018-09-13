@@ -32,7 +32,7 @@ const tail = require('./lib/tail');
 const residue_crypt = require('./lib/residue_crypt');
 const proc = require('./lib/option_parser');
 
-
+console.log(`Residue library version: ${residue.version()}-${residue.type()}`);
 proc.parse(process.argv);
 
 if (proc.config === false) {

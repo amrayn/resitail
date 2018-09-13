@@ -1,6 +1,6 @@
 {
   "name": "resitail",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Stream your residue server logs using hooks",
   "homepage": "https://github.com/muflihun/resitail",
   "author": "Muflihun Labs <info@muflihun.com>",
@@ -20,7 +20,7 @@
     "util": "^0.10.3"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node --harmony index.js"
   },
   "repository": {
     "type": "git",
