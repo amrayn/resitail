@@ -1,6 +1,6 @@
 {
   "name": "resitail",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Stream your residue server logs using hooks",
   "homepage": "https://github.com/muflihun/resitail",
   "author": "Muflihun Labs <info@muflihun.com>",
@@ -16,7 +16,7 @@
     "lodash.includes": "^4.3.0",
     "lodash.isempty": "^4.4.0",
     "lodash.merge": "^4.6.1",
-    "residue": "^2.1.0",
+    "residue": "^2.3.19",
     "util": "^0.10.3"
   },
   "scripts": {
