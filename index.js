@@ -31,8 +31,10 @@ const residue = require('residue');
 const tail = require('./lib/tail');
 const residue_crypt = require('./lib/residue_crypt');
 const proc = require('./lib/option_parser');
+const packageJson = require('./package.json');
 
-console.log(`Residue library version: ${residue.version()}-${residue.type()}`);
+console.log(`resitail v${packageJson.version}`);
+console.log(`residue library version: ${residue.version()}-${residue.type()}`);
 proc.parse(process.argv);
 
 if (proc.config === false) {
