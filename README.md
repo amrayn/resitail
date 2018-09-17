@@ -8,7 +8,7 @@
 [![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
-Resitail is a middleware to stream [residue](https://github.com/muflihun/residue) server logs via various hooks
+Stream [residue](https://github.com/muflihun/residue) server logs via various hooks
 
 ## Quick start
 
@@ -37,6 +37,8 @@ Hook is essentially a JS module with following minimal requirements
  * Export this class
  
 Once connected resitail will use this `send` function to send the logs
+
+A most commonly used hook is [resitail-f](https://github.com/muflihun/resitail-f). It is even used in production servers for _muflihun.com_
 
 Example:
 
