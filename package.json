@@ -1,9 +1,9 @@
 {
   "name": "resitail",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Stream your residue server logs using hooks",
-  "homepage": "https://github.com/muflihun/resitail",
-  "author": "Muflihun Labs <info@muflihun.com>",
+  "homepage": "https://github.com/zuhd-org/resitail",
+  "author": "Zuhd Web Services <opensource@zuhd.org>",
   "license": "Apache-2.0",
   "bin": "./bin/resitail",
   "dependencies": {
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/muflihun/resitail.git"
+    "url": "http://github.com/zuhd-org/resitail.git"
   },
   "keywords": [
     "tail",

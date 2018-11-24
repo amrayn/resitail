@@ -5,10 +5,11 @@
 # Resitail
 
 [![Version](https://img.shields.io/npm/v/resitail.svg)](https://www.npmjs.com/package/resitail)
-[![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/muflihun/resitail/blob/master/LICENSE)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
+[![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/zuhd-org/resitail/blob/master/LICENSE)
 
-Stream [residue](https://github.com/muflihun/residue) server logs via various hooks
+[![Donate](https://muflihun.github.io/donate.png?v2)](https://www.paypal.me/zuhd/25)
+
+Stream [residue](https://github.com/zuhd-org/residue) server logs via various hooks
 
 ## Quick start
 
@@ -35,7 +36,7 @@ Hook is essentially a JS module with following minimal requirements
  * A class with options constructor
  * A send function with `data` parameter.
  * Export this class
- 
+
 Once connected resitail will use this `send` function to send the logs
 
 A most commonly used hook is [resitail-f](https://github.com/muflihun/resitail-f). It is even used in production servers for _muflihun.com_
@@ -47,7 +48,7 @@ Example:
 
 function sampleHook (options) {
     this.options = options;
-    
+
     this.send = (data) => {
         console.log(data);
     }
@@ -131,12 +132,12 @@ Local (notice `path`):
 
 ## License
 ```
-Copyright 2017-present Muflihun Labs
+Copyright 2017-present Zuhd Web Services
 Copyright 2017-present @abumusamq
 
-https://github.com/muflihun/
+https://github.com/zuhd-org/
 https://muflihun.com/
-https://muflihun.github.io/
+https://zuhd.org
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
