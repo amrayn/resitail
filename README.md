@@ -5,11 +5,11 @@
 # Resitail
 
 [![Version](https://img.shields.io/npm/v/resitail.svg)](https://www.npmjs.com/package/resitail)
-[![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/zuhd-org/resitail/blob/master/LICENSE)
+[![Apache 2.0 license](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/amrayn/resitail/blob/master/LICENSE)
 
-[![Donate](https://muflihun.github.io/donate.png?v2)](https://www.paypal.me/zuhd/25)
+[![Donate](https://amrayn.github.io/donate.png?v2)](https://amrayn.com/donate)
 
-Stream [residue](https://github.com/zuhd-org/residue) server logs via various hooks
+Stream [residue](https://github.com/amrayn/residue) server logs via various hooks
 
 ## Quick start
 
@@ -39,7 +39,7 @@ Hook is essentially a JS module with following minimal requirements
 
 Once connected resitail will use this `send` function to send the logs
 
-A most commonly used hook is [resitail-f](https://github.com/muflihun/resitail-f). It is even used in production servers for _muflihun.com_
+A most commonly used hook is [resitail-f](https://github.com/amrayn/resitail-f). It is even used in production servers for _muflihun.com_
 
 Example:
 
@@ -128,16 +128,16 @@ Local (notice `path`):
 
 ## Notes
  * Please [search for resitail-hook on NPM](https://www.npmjs.com/browse/keyword/resitail-hook) for available hooks
- * Please [check out sample hook](https://github.com/muflihun/resitail-f) to get started
+ * Please [check out sample hook](https://github.com/amrayn/resitail-f) to get started
 
 ## License
 ```
-Copyright 2017-present Zuhd Web Services
+Copyright 2017-present Amrayn Web Services
 Copyright 2017-present @abumusamq
 
-https://github.com/zuhd-org/
+https://github.com/amrayn/
 https://muflihun.com/
-https://zuhd.org
+https://amrayn.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

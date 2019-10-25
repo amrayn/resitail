@@ -2,8 +2,8 @@
   "name": "resitail",
   "version": "1.5.3",
   "description": "Stream your residue server logs using hooks",
-  "homepage": "https://github.com/zuhd-org/resitail",
-  "author": "Zuhd Web Services <opensource@zuhd.org>",
+  "homepage": "https://github.com/amrayn/resitail",
+  "author": "Amrayn Web Services <opensource@amrayn.com>",
   "license": "Apache-2.0",
   "bin": "./bin/resitail",
   "dependencies": {
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/zuhd-org/resitail.git"
+    "url": "http://github.com/amrayn/resitail.git"
   },
   "keywords": [
     "tail",
